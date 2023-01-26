@@ -8,6 +8,7 @@ const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 
 const http = require("http");
+const { MongooseCRUD } = require("./config/MongoDb/Api");
 const app = express();
 
 // view engine setup
@@ -20,7 +21,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/", indexRouter);
+app.use("/");
 app.use("/users", usersRouter);
 
 // catch 404 and forward to error handler
@@ -47,28 +48,31 @@ const server = http.createServer(app);
 
 //DB
 
-// MongooseCRUD('C','admin',{
-//   "id": 4432,
-//   "type": 0,
-//   "name": 'Alex',
-//   "create_date": '2022/11/15',
-//   "photo": '',
-//   "status": 0,
-//   "account": 'eric9527',
-//   "password": 'eric9527',
-//   "frontend_token": '',
-//   "backend_token": '',
-//   "deck_id": [],
-//   "series_introduction_id": [],
-//   "useful_card_introduction_id": [],
-//   "meta_deck_id": [],
-//   "product_information_id": [],
-//   "rules_id": [],
-//   "series_story_id": [],
-//   "battle_paper_id": [],
-// }).then((arr,err)=>{
-//   console.log(arr,err)
-// })
+// MongooseCRUD("C", "battle_paper", {
+//   id: 10001,
+//   type: 0,
+//   title: "[YCSJ] 32強 牌組大揭密",
+//   publish_date: "2022/11/15",
+//   last_edit_date: "2022/11/15",
+//   photo: "",
+//   status: 0,
+//   content: "這是內容",
+//   to_top: false,
+//   admin_id: 10001,
+//   tag: [],
+// }).then((arr, err) => {
+//   console.log(arr, err);
+// });
+
+MongooseCRUD(
+  "R",
+  "admin",
+  {},
+  { sort: { id: -1 }, skip: 1, limit: 1 },
+  { id: 1, create_date: 1 }
+).then((arr, err) => {
+  console.log(arr, err);
+});
 
 server.listen(app.get("port"), function () {
   debug("Express server listening on port " + server.address().port);
