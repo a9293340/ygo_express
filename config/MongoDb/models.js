@@ -126,7 +126,7 @@ const cards = new mongoose.Schema({
   type: { type: String },
   star: { type: String },
   attribute: { type: String },
-  rarity: { type: String },
+  rarity: { type: Array },
   atk: { type: Number },
   def: { type: Number },
   product_information_type_id: { type: Number },

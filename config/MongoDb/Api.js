@@ -24,6 +24,9 @@ const MongooseCRUD = (
     useUnifiedTopology: true,
   });
 
+  //if type not remark "one" or "many" , transform type to "one".
+  type = type === "U" || type === "D" ? `${type}o` : type;
+
   const model = mongoose.model(modelName, models[modelName], modelName);
 
   let promise;
