@@ -30,7 +30,7 @@ app.get("/", (req, res) => {
   res.render("index.ejs");
 });
 
-// catch 404 and forward to error handler
+// catch 404 and forward to error handleryar
 // app.use(function (req, res, next) {
 //   next(createError(404));
 // });
