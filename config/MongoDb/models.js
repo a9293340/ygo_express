@@ -178,6 +178,16 @@ const tag = new mongoose.Schema({
   tag: { type: String },
 });
 
+const frontend_token = new mongoose.Schema({
+  token: { type: String },
+  date: { type: String },
+});
+
+const backend_token = new mongoose.Schema({
+  token: { type: String },
+  date: { type: String },
+});
+
 module.exports = {
   admin,
   series_introduction,
@@ -193,4 +203,6 @@ module.exports = {
   banner,
   product_information_type,
   tag,
+  frontend_token,
+  backend_token,
 };

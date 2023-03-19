@@ -7,11 +7,13 @@
     <title>Document</title>
 </head>
 <body>
-<button onclick="find()">Click</button>
-<button onclick="create()">Click</button>
+<button onclick="find()">list</button>
+<button onclick="create()">add</button>
+<button onclick="login()">login</button>
 12313215
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.4/axios.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 <script>
     const datasss = {
         name: 'Eric55',
@@ -33,6 +35,7 @@
         useful_card_introduction_id: [],
         type: 0,
     };
+    const token = '3e6579b8-105c-40b4-8865-0bd392c7ed56'
     function create() {
         axios
             .post('http://localhost:3000/admin/add', datasss)
@@ -46,6 +49,22 @@
 
     function find(){
         axios.get('http://localhost:3000/admin/list').then( res => {console.log(res)})
+    }
+
+    function login() {
+        const data = {account: 'alex9527',password: 'alex9'}
+        const obj = CryptoJS.AES.encrypt(JSON.stringify(data), 'C8763').toString()
+        let de = CryptoJS.AES.decrypt(obj, "C8763")
+        console.log(obj)
+        console.log(de.toString(CryptoJS.enc.Utf8))
+        axios
+            .post('http://localhost:3000/admin/login', {data:obj})
+            .then(res => {
+               console.log(res)
+            })
+            .catch(e => {
+                console.log(e);
+            });
     }
 </script>
 </body>

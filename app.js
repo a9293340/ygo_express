@@ -10,6 +10,7 @@ const adminRouter = require("./routes/admin");
 
 const http = require("http");
 const { MongooseCRUD } = require("./config/MongoDb/Api");
+const { makeToken } = require("./routes/encryptNToken");
 const app = express();
 
 // view engine setup
@@ -31,19 +32,18 @@ app.get("/", (req, res) => {
 });
 
 // catch 404 and forward to error handleryar
-// app.use(function (req, res, next) {
-//   next(createError(404));
-// });
+app.use(function (req, res, next) {
+  res.json({
+    error_code: 10001,
+    data: {},
+  });
+});
 
 // error handler
 app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "development" ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render("error");
+  console.log(err);
+  const error_code = Number.isInteger(err) ? err : 10003;
+  res.status(404).json({ error_code, data: { token: "" } });
 });
 
 const debug = require("debug")("my-application");
