@@ -7,40 +7,31 @@
     <title>Document</title>
 </head>
 <body>
+Admin
 <button onclick="find()">list</button>
 <button onclick="create()">add</button>
 <button onclick="login()">login</button>
+<button onclick="logout()">logout</button>
 12313215
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.4/axios.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 <script>
-    const datasss = {
-        name: 'Eric55',
-        account: 'alex222',
-        backend_token: '',
-        battle_paper_id: [],
-        create_date: '2023/03/14',
-        deck_id: [],
-        frontend_token: '',
-        id: 4431,
-        meta_deck_id: [],
-        password: 'alex222',
-        photo: '',
-        product_information_id: [],
-        rules_id: [],
-        series_introduction_id: [],
-        series_story_id: [],
-        status: 0,
-        useful_card_introduction_id: [],
-        type: 0,
-    };
-    const token = '3e6579b8-105c-40b4-8865-0bd392c7ed56'
+    let token = "22ed499e-62e4-4143-a05a-4fdacc330d89"
     function create() {
+        const datasss = {
+            name: 'Eric555',
+            account: 'alex22232',
+            create_date: '2023/03/14',
+            password: 'alex2223',
+            email:"alex1234@gmail.com",
+            type: 0,
+        };
+        const obj = CryptoJS.AES.encrypt(JSON.stringify(datasss), 'C8763').toString()
         axios
-            .post('http://localhost:3000/admin/add', datasss)
+            .post('http://localhost:3000/api/admin/add', {data:obj})
             .then(res => {
-                alert(res.data.status);
+                console.log(res)
             })
             .catch(e => {
                 console.log(e);
@@ -48,24 +39,48 @@
     }
 
     function find(){
-        axios.get('http://localhost:3000/admin/list').then( res => {console.log(res)})
+        const find = {
+            token,
+            tokenRef:"alex9527",
+            page: 1,
+            limit: 2,
+            filter: {
+                type: 0,
+                status: 0
+            }}
+        const obj = CryptoJS.AES.encrypt(JSON.stringify(find), 'C8763').toString()
+        axios.post('http://localhost:3000/api/admin/list',{data:obj}).then( res => {console.log(res)})
     }
 
     function login() {
-        const data = {account: 'alex9527',password: 'alex9'}
+        const data = {account: 'alex9527',password: 'alex9527'}
         const obj = CryptoJS.AES.encrypt(JSON.stringify(data), 'C8763').toString()
         let de = CryptoJS.AES.decrypt(obj, "C8763")
         console.log(obj)
-        console.log(de.toString(CryptoJS.enc.Utf8))
         axios
-            .post('http://localhost:3000/admin/login', {data:obj})
+            .post('http://localhost:3000/api/admin/login', {data:obj})
             .then(res => {
                console.log(res)
+                token = res.data.data.token
             })
             .catch(e => {
                 console.log(e);
             });
     }
+
+    function logout(){
+        const data = {token : token,tokenRef: 'alex9527'}
+        const obj = CryptoJS.AES.encrypt(JSON.stringify(data), 'C8763').toString()
+        axios
+            .post('http://localhost:3000/api/admin/logout', {data:obj})
+            .then(res => {
+                console.log(res)
+                token = ''})
+            .catch(e => {
+                console.log(e);
+            });
+    }
+
 </script>
 </body>
 </html>

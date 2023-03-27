@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 
 const admin = new mongoose.Schema({
-  id: { type: Number },
   type: { type: Number },
   name: { type: "string" },
   create_date: { type: "string" },
@@ -9,20 +8,10 @@ const admin = new mongoose.Schema({
   status: { type: Number },
   account: { type: "string" },
   password: { type: "string" },
-  frontend_token: { type: "string" },
-  backend_token: { type: "string" },
-  deck_id: { type: Array },
-  series_introduction_id: { type: Array },
-  useful_card_introduction_id: { type: Array },
-  meta_deck_id: { type: Array },
-  product_information_id: { type: Array },
-  rules_id: { type: Array },
-  series_story_id: { type: Array },
-  battle_paper_id: { type: Array },
+  email: { type: "string" },
 });
 
 const series_introduction = new mongoose.Schema({
-  id: { type: Number },
   type: { type: Number },
   title: { type: String },
   publish_date: { type: String },
@@ -36,7 +25,6 @@ const series_introduction = new mongoose.Schema({
 });
 
 const useful_card_introduction = new mongoose.Schema({
-  id: { type: Number },
   type: { type: Number },
   title: { type: String },
   publish_date: { type: String },
@@ -50,7 +38,6 @@ const useful_card_introduction = new mongoose.Schema({
 });
 
 const meta_deck = new mongoose.Schema({
-  id: { type: Number },
   type: { type: Number },
   title: { type: String },
   publish_date: { type: String },
@@ -64,7 +51,6 @@ const meta_deck = new mongoose.Schema({
 });
 
 const product_information = new mongoose.Schema({
-  id: { type: Number },
   type: { type: Number },
   product_information_type_id: { type: Number },
   title: { type: String },
@@ -79,7 +65,6 @@ const product_information = new mongoose.Schema({
 });
 
 const rules = new mongoose.Schema({
-  id: { type: Number },
   type: { type: Number },
   title: { type: String },
   publish_date: { type: String },
@@ -93,7 +78,6 @@ const rules = new mongoose.Schema({
 });
 
 const series_story = new mongoose.Schema({
-  id: { type: Number },
   title: { type: String },
   publish_date: { type: String },
   last_edit_date: { type: String },
@@ -106,7 +90,6 @@ const series_story = new mongoose.Schema({
 });
 
 const battle_paper = new mongoose.Schema({
-  id: { type: Number },
   type: { type: Number },
   title: { type: String },
   publish_date: { type: String },
@@ -120,7 +103,6 @@ const battle_paper = new mongoose.Schema({
 });
 
 const cards = new mongoose.Schema({
-  id: { type: Number },
   number: { type: String },
   name: { type: String },
   type: { type: String },
@@ -136,7 +118,6 @@ const cards = new mongoose.Schema({
 });
 
 const decks = new mongoose.Schema({
-  id: { type: Number },
   admin_id: { type: Number },
   title: { type: String },
   create_date: { type: String },
@@ -147,7 +128,6 @@ const decks = new mongoose.Schema({
 });
 
 const calendar = new mongoose.Schema({
-  id: { type: Number },
   title: { type: String },
   date: { type: String },
   url: { type: String },
@@ -155,7 +135,6 @@ const calendar = new mongoose.Schema({
 });
 
 const banner = new mongoose.Schema({
-  id: { type: Number },
   title: { type: String },
   subtitle: { type: String },
   date: { type: String },
@@ -165,7 +144,6 @@ const banner = new mongoose.Schema({
 });
 
 const product_information_type = new mongoose.Schema({
-  id: { type: Number },
   packType: { type: String },
   subtype: { type: String },
   maintype: { type: Number },
@@ -174,18 +152,19 @@ const product_information_type = new mongoose.Schema({
 });
 
 const tag = new mongoose.Schema({
-  id: { type: Number },
   tag: { type: String },
 });
 
 const frontend_token = new mongoose.Schema({
   token: { type: String },
   date: { type: String },
+  tokenRef: { type: String },
 });
 
 const backend_token = new mongoose.Schema({
   token: { type: String },
   date: { type: String },
+  tokenRef: { type: String },
 });
 
 module.exports = {
