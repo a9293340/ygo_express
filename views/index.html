@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    Admin
+    <button onclick="find()">list</button>
+    <button onclick="create()">add</button>
+    <button onclick="login()">login</button>
+    <button onclick="logout()">logout</button>
+    <button onclick="edit()">edit</button>
+    <br>
+    <br>
+    <br>
+    Series Introduction
+    <button onclick="SIList()">list</button>
+    <button onclick="SIAdd()">Add</button>
+    <button onclick="SIEdit()">Edit</button>
+    <br>
+    <br>
+    <br>
+    Useful Card Introduction
+    <button onclick="UCIList()">list</button>
+    <button onclick="UCIAdd()">Add</button>
+    <button onclick="UCIEdit()">Edit</button>
+    <br>
+    <br>
+    <br>
+    Meta Deck
+    <button onclick="MDList()">list</button>
+    <button onclick="MDAdd()">Add</button>
+    <button onclick="MDEdit()">Edit</button>
+    <br>
+    <br>
+    <br>
+    product information
+    <button onclick="PIList()">list</button>
+    <button onclick="PIAdd()">Add</button>
+    <button onclick="PIEdit()">Edit</button>
+    <br>
+    <br>
+    <br>
+    production Information Type
+    <button onclick="PITList()">list</button>
+
+
+
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.4/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script>
+        let token = "22ed499e-62e4-4143-a05a-4fdacc330d89"
+        // admin
+        function create() {
+            const datasss = {
+                token,
+                tokenReq:"alex9527",
+                name: 'Eric555',
+                account: 'alex22232',
+                create_date: '2023/03/14',
+                password: 'alex2223',
+                email:"alex1234@gmail.com",
+                type: 0,
+            };
+            const obj = CryptoJS.AES.encrypt(JSON.stringify(datasss), 'C8763').toString()
+            axios
+                .post('http://localhost:3000/api/admin/add', {data:obj})
+                .then(res => {
+                    console.log(res)
+                })
+                .catch(e => {
+                    console.log(e);
+                });
+        }
+        function edit(){
+            const edit = {
+                token,
+                tokenReq:"alex2223",
+                _id: '6419c838d4b5d905bb2c9aaf',
+                type:0,
+                name: '王子恆2',
+                photo: '',
+                status: 0
+            }
+            const obj = CryptoJS.AES.encrypt(JSON.stringify(edit), 'C8763').toString()
+            axios
+                .post('http://localhost:3000/api/admin/edit', {data:obj})
+                .then(res => {
+                    console.log(res)
+                })
+                .catch(e => {
+                    console.log(e);
+                });
+        }
+        function find(){
+            const find = {
+                token,
+                tokenReq:"alex2223",
+                page: 0,
+                limit: 2,
+                filter: {
+                    type: 0,
+                    status: 0
+                }}
+            const obj = CryptoJS.AES.encrypt(JSON.stringify(find), 'C8763').toString()
+            axios.post('http://localhost:3000/api/admin/list',{data:obj}).then( res => {
+                const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
+                console.log(ans)
+            })
+        }
+        function login() {
+            const data = {account: 'alex2223',password: 'alex2223'}
+            const obj = CryptoJS.AES.encrypt(JSON.stringify(data), 'C8763').toString()
+            let de = CryptoJS.AES.decrypt(obj, "C8763")
+            console.log(obj)
+            axios
+                .post('http://localhost:3000/api/admin/login', {data:obj})
+                .then(res => {
+                    const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
+                    console.log(ans)
+                    token = ans.token
+                })
+                .catch(e => {
+                    console.log(e);
+                });
+        }
+        function logout(){
+            const data = {token : token,tokenReq: 'alex2223'}
+            const obj = CryptoJS.AES.encrypt(JSON.stringify(data), 'C8763').toString()
+            axios
+                .post('http://localhost:3000/api/admin/logout', {data:obj})
+                .then(res => {
+                    console.log(res)
+                    token = ''})
+                .catch(e => {
+                    console.log(e);
+                });
+        }
+        // Series Introduction
+        function SIList (){
+            const find = {
+                token,
+                tokenReq:"alex2223",
+                page: 0,
+                limit: 2,
+                filter: {
+                    type: 0,
+                    status: 0,
+                    begin_date: '2022-10-1',
+                    end_date : '2023-01-31'
+                }}
+            const obj = CryptoJS.AES.encrypt(JSON.stringify(find), 'C8763').toString()
+            axios.post('http://localhost:3000/api/serialIntroduction/articleList',{data:obj}).then( res => {
+                const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
+                console.log(ans,res.data.error_code)
+            })
+        }
+
+        function SIAdd () {
+            const addSi = {
+                token,
+                tokenReq:"alex2223",
+                type:0,
+                title:'主題牌組 : 榮睿超人44444',
+                publish_date: "2023/03/29",
+                photo:'',
+                content:'榮睿好酷4444',
+                author_name:'alex2223',
+                author_id:'6419c838d4b5d905bb2c9aaf',
+                tag: ['酷酷','憨憨','我好酷']
+            }
+            const obj = CryptoJS.AES.encrypt(JSON.stringify(addSi), 'C8763').toString()
+            axios.post('http://localhost:3000/api/serialIntroduction/addArticle',{data:obj}).then( res => {
+                const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
+                console.log(ans,res.data.error_code)
+            })
+        }
+
+        function SIEdit () {
+            const addSi = {
+                token,
+                tokenReq:"alex2223",
+                type:0,
+                title:'主題牌組 : 榮睿超人22444',
+                publish_date: "2023/03/28 4:44:38",
+                photo:'',
+                content:'榮睿好酷22442',
+                author_name:'榮睿兄',
+                author_id:'6419c838d4b5d905bb2c9aaf',
+                tag: ['酷酷','憨憨','呆呆'],
+                status:1,
+                to_top:true,
+                _id: '6422f3dabc71d589de631423'
+            }
+            const obj = CryptoJS.AES.encrypt(JSON.stringify(addSi), 'C8763').toString()
+            axios.post('http://localhost:3000/api/serialIntroduction/editArticle',{data:obj}).then( res => {
+                const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
+                console.log(ans,res.data.error_code)
+            })
+        }
+
+        // useful_card_introduction
+        function UCIList (){
+            const find = {
+                token,
+                tokenReq:"alex2223",
+                page: 0,
+                limit: 2,
+                filter: {
+                    type: 0,
+                    status: 0,
+                    begin_date: '2022-10-1',
+                    end_date : '2023-01-31'
+                }}
+            const obj = CryptoJS.AES.encrypt(JSON.stringify(find), 'C8763').toString()
+            axios.post('http://localhost:3000/api/usefulCardIntroduction/articleList',{data:obj}).then( res => {
+                const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
+                console.log(ans,res.data.error_code)
+            })
+        }
+
+        function UCIAdd () {
+            const addSi = {
+                token,
+                tokenReq:"alex2223",
+                type:0,
+                title:'超殺神卡 : 謝榮睿',
+                publish_date: "2023/03/29 4:44:44",
+                photo:'',
+                content:'榮睿好酷4444  7788',
+                author_name:'alex2223',
+                author_id:'6419c838d4b5d905bb2c9aaf',
+                tag: ['酷酷','憨憨','我好酷']
+            }
+            const obj = CryptoJS.AES.encrypt(JSON.stringify(addSi), 'C8763').toString()
+            axios.post('http://localhost:3000/api/usefulCardIntroduction/addArticle',{data:obj}).then( res => {
+                const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
+                console.log(ans,res.data.error_code)
+            })
+        }
+
+        function UCIEdit () {
+            const addSi = {
+                token,
+                tokenReq:"alex2223",
+                type:0,
+                title:'超殺神卡 : 謝榮睿達人',
+                publish_date: "2023/03/28 4:44:38",
+                photo:'',
+                content:'榮睿好酷22442',
+                author_name:'榮睿兄',
+                author_id:'6419c838d4b5d905bb2c9aaf',
+                tag: ['酷酷','憨憨','先睡一下'],
+                status:1,
+                to_top:true,
+                _id: '64230165be5edd8ddfd25ffd'
+            }
+            const obj = CryptoJS.AES.encrypt(JSON.stringify(addSi), 'C8763').toString()
+            axios.post('http://localhost:3000/api/usefulCardIntroduction/editArticle',{data:obj}).then( res => {
+                const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
+                console.log(ans,res.data.error_code)
+            })
+        }
+
+        //     meta_deck
+
+        function MDList (){
+            const find = {
+                token,
+                tokenReq:"alex2223",
+                page: 0,
+                limit: 2,
+                filter: {
+                    type: 0,
+                    status: 0,
+                    begin_date: '2022-10-1',
+                    end_date : '2023-01-31'
+                }}
+            const obj = CryptoJS.AES.encrypt(JSON.stringify(find), 'C8763').toString()
+            axios.post('http://localhost:3000/api/metaDeck/articleList',{data:obj}).then( res => {
+                const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
+                console.log(ans,res.data.error_code)
+            })
+        }
+
+        function MDAdd () {
+            const addSi = {
+                token,
+                tokenReq:"alex2223",
+                type:0,
+                title:'都已經是輪椅還能上位 太神了吧 14why',
+                publish_date: "2023/03/29 4:44:44",
+                photo:'',
+                content:'榮睿好酷4444  7788',
+                author_name:'alex2223',
+                author_id:'6419c838d4b5d905bb2c9aaf',
+                tag: ['酷酷','憨憨','我好酷']
+            }
+            const obj = CryptoJS.AES.encrypt(JSON.stringify(addSi), 'C8763').toString()
+            axios.post('http://localhost:3000/api/metaDeck/addArticle',{data:obj}).then( res => {
+                const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
+                console.log(ans,res.data.error_code)
+            })
+        }
+
+        function MDEdit(){
+            const addSi = {
+                token,
+                tokenReq:"alex2223",
+                type:0,
+                title:'都已經是輪椅還能上位 太神了吧 14why 2222',
+                publish_date: "2023/03/28 4:44:38",
+                photo:'',
+                content:'榮睿好酷22442',
+                author_name:'榮睿兄 444',
+                author_id:'6419c838d4b5d905bb2c9aaf',
+                tag: ['酷酷','憨憨','先睡一下'],
+                status:1,
+                to_top:true,
+                _id: '64258f0bef5affc4a72359ba'
+            }
+            const obj = CryptoJS.AES.encrypt(JSON.stringify(addSi), 'C8763').toString()
+            axios.post('http://localhost:3000/api/metaDeck/editArticle',{data:obj}).then( res => {
+                const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
+                console.log(ans,res.data.error_code)
+            })
+        }
+
+        //     product information
+
+        function PIList (){
+            const find = {
+                token,
+                tokenReq:"alex2223",
+                page: 0,
+                limit: 2,
+                filter: {
+                    type: 0,
+                    status: 0,
+                    begin_date: '2022-10-1',
+                    end_date : '2023-01-31'
+                }}
+            const obj = CryptoJS.AES.encrypt(JSON.stringify(find), 'C8763').toString()
+            axios.post('http://localhost:3000/api/productInformation/articleList',{data:obj}).then( res => {
+                const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
+                console.log(ans,res.data.error_code)
+            })
+        }
+
+        function PIAdd () {
+            const addSi = {
+                token,
+                tokenReq:"alex2223",
+                type:0,
+                title:'都已經是輪椅還能上位 太神了吧 14why',
+                publish_date: "2023/03/29 4:44:44",
+                photo:'',
+                content:'榮睿好酷4444  7788',
+                author_name:'alex2223',
+                author_id:'6419c838d4b5d905bb2c9aaf',
+                tag: ['酷酷','憨憨','我好酷']
+            }
+            const obj = CryptoJS.AES.encrypt(JSON.stringify(addSi), 'C8763').toString()
+            axios.post('http://localhost:3000/api/productInformation/addArticle',{data:obj}).then( res => {
+                const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
+                console.log(ans,res.data.error_code)
+            })
+        }
+
+        function PIEdit(){
+            const addSi = {
+                token,
+                tokenReq:"alex2223",
+                type:0,
+                title:'都已經是輪椅還能上位 太神了吧 14why 2222',
+                publish_date: "2023/03/28 4:44:38",
+                photo:'',
+                content:'榮睿好酷22442',
+                author_name:'榮睿兄 444',
+                author_id:'6419c838d4b5d905bb2c9aaf',
+                tag: ['酷酷','憨憨','先睡一下'],
+                status:1,
+                to_top:true,
+                _id: '64258f0bef5affc4a72359ba'
+            }
+            const obj = CryptoJS.AES.encrypt(JSON.stringify(addSi), 'C8763').toString()
+            axios.post('http://localhost:3000/api/productInformation/editArticle',{data:obj}).then( res => {
+                const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
+                console.log(ans,res.data.error_code)
+            })
+        }
+
+        //    production Information Type
+        function PITList(){
+            const data = {
+                token,
+                tokenReq:"alex2223",
+            }
+            const obj = CryptoJS.AES.encrypt(JSON.stringify(data), 'C8763').toString()
+            axios.post('http://localhost:3000/api/productionInformationType/list',{data:obj}).then( res => {
+                const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
+                console.log(ans,res.data.error_code)
+            })
+        }
+    </script>
+</body>
+</html>
