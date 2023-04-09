@@ -111,10 +111,16 @@ const cards = new mongoose.Schema({
   rarity: { type: Array },
   atk: { type: Number },
   def: { type: Number },
-  product_information_type_id: { type: String },
+  product_information_type: { type: String },
   effect: { type: String },
-  photo: { type: String },
   price_info: { type: Array },
+  price_yuyu: { type: Array },
+  id: { type: String },
+});
+
+const cards_image = new mongoose.Schema({
+  number: { type: String },
+  photo: { type: String },
 });
 
 const decks = new mongoose.Schema({
@@ -184,4 +190,5 @@ module.exports = {
   tag,
   frontend_token,
   backend_token,
+  cards_image,
 };

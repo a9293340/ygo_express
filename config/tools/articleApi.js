@@ -2,25 +2,18 @@ const { MongooseCRUD } = require("../../config/MongoDb/Api");
 const { decryptRes, encryptRes } = require("./encryptNToken");
 const { toISODate, makeArticleDateArr } = require("./toDate");
 const articleList = (req, res, next, modelName) => {
-  const { filter, limit, page } = decryptRes(req.body.data);
-  console.log(
-    1,
-    filter,
-    toISODate(filter.begin_date),
-    toISODate(filter.end_date)
-  );
-  MongooseCRUD(
-    "R",
-    modelName,
-    {
-      publish_date: {
-        $gte: toISODate(filter.begin_date),
-        $lte: toISODate(filter.end_date),
-      },
-    },
-    {},
-    {}
-  ).then((arr, err) => {
+  const { token, filter, limit, page } = decryptRes(req.body.data);
+  let target =
+    token === "frontend"
+      ? filter
+      : {
+          publish_date: {
+            $gte: toISODate(filter.begin_date),
+            $lte: toISODate(filter.end_date),
+          },
+          status: filter.status,
+        };
+  MongooseCRUD("R", modelName, target, {}, {}).then((arr, err) => {
     if (err) next(err);
     else if (!Number.isInteger(limit) || !Number.isInteger(page)) next(10004);
     else {

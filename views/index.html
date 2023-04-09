@@ -44,6 +44,15 @@
     <br>
     production Information Type
     <button onclick="PITList()">list</button>
+    <br>
+    <br>
+    <br>
+    Cards
+    <button onclick="CardsList()">list</button>
+    <button onclick="CardsAdd()">Add</button>
+    <button onclick="CardsEdit()">Edit</button>
+
+    <img id="aaa" src="" alt="">
 
 
 
@@ -52,6 +61,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.4/axios.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/image-to-base64@2.2.0/browser.min.js"></script>
     <script>
         let token = "22ed499e-62e4-4143-a05a-4fdacc330d89"
         // admin
@@ -402,6 +412,76 @@
             }
             const obj = CryptoJS.AES.encrypt(JSON.stringify(data), 'C8763').toString()
             axios.post('http://localhost:3000/api/productionInformationType/list',{data:obj}).then( res => {
+                const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
+                console.log(ans,res.data.error_code)
+            })
+        }
+
+        //  cards
+        function CardsList(){
+            console.log('Cards')
+            const data = {
+                token,
+                tokenReq:"alex2223",
+                page: 0,
+                limit: 2,
+                filter:{
+                    number: ['99543666','92895501']
+                }
+            }
+            const obj = CryptoJS.AES.encrypt(JSON.stringify(data), 'C8763').toString()
+            axios.post('http://localhost:3000/api/cards/list',{data:obj}).then( res => {
+                const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
+                console.log(ans,res.data.error_code)
+            })
+        }
+
+        function CardsAdd(){
+            const data = {
+                token,
+                tokenReq:"alex2223",
+                "number": "99543666",
+                "name": "烙印劇城絕望戲曲",
+                "type": "",
+                "race": "場地魔法",
+                "attribute": "魔",
+                "rarity": ["普卡"],
+                "atk": "",
+                "def": "",
+                "product_information_type_id": 0,
+                "id": "DAMA-JP053",
+                "effect": "此卡名的(1)(2)效果分別1回合只能使用1次。\n(1)：\n從我方手牌・場上，\n將依等級8以上融合怪獸卡而定的融合素材怪獸送往墓地，\n而將該融合怪獸1體從額外牌組融合召喚。\n(2)：\n融合怪獸以外的我方場上表側表示天使族怪獸，\n因對手效果離場的場合，或是因戰鬥而被破壞的場合，\n以我方墓地等級8以上的融合怪獸1體為對象可發動。\n將該怪獸特殊召喚。　",
+                "price_info": [],
+                "product_information_type": "DAMA"
+            }
+            const obj = CryptoJS.AES.encrypt(JSON.stringify(data), 'C8763').toString()
+            axios.post('http://localhost:3000/api/cards/add',{data:obj}).then( res => {
+                const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
+                console.log(ans,res.data.error_code)
+            })
+        }
+
+        function CardsEdit(){
+            const data = {
+                token,
+                tokenReq:"alex2223",
+                "_id":'643188ad5eb9f075503fbb27',
+                "number": "99543666",
+                "name": "烙印劇城絕望戲曲2",
+                "type": "",
+                "race": "場地魔法",
+                "attribute": "魔",
+                "rarity": ["普卡"],
+                "atk": "",
+                "def": "",
+                "product_information_type_id": 0,
+                "id": "DAMA-JP053",
+                "effect": "此卡名的(1)(2)效果分別1回合只能使用1次。\n(1)：\n從我方手牌・場上，\n將依等級8以上融合怪獸卡而定的融合素材怪獸送往墓地，\n而將該融合怪獸1體從額外牌組融合召喚。\n(2)：\n融合怪獸以外的我方場上表側表示天使族怪獸，\n因對手效果離場的場合，或是因戰鬥而被破壞的場合，\n以我方墓地等級8以上的融合怪獸1體為對象可發動。\n將該怪獸特殊召喚。　",
+                "price_info": [],
+                "product_information_type": "DAMA"
+            }
+            const obj = CryptoJS.AES.encrypt(JSON.stringify(data), 'C8763').toString()
+            axios.post('http://localhost:3000/api/cards/edit',{data:obj}).then( res => {
                 const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
                 console.log(ans,res.data.error_code)
             })

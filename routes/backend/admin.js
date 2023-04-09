@@ -75,7 +75,6 @@ router.post("/add", limiter, checkToken, async (req, res, next) => {
       status: 0,
       type: user.type,
     };
-    console.log(temp);
     try {
       const accountTemp = await MongooseCRUD("R", "admin", {
         $or: [{ account: user.account }, { email: user.email }],
