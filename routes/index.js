@@ -8,6 +8,9 @@ const seriesStoryRouter = require('./backend/seriesStory');
 const battlePaperRouter = require('./backend/battlePaper');
 const cardsRouter = require('./backend/cards');
 const productionInformationTypeRouter = require('./backend/productionInformationType');
+const calendarRouter = require('./backend/calendar');
+const tagRouter = require('./backend/tag');
+const bannerRouter = require('./backend/banner');
 
 module.exports = {
 	adminRouter,
@@ -20,4 +23,7 @@ module.exports = {
 	battlePaperRouter,
 	cardsRouter,
 	productionInformationTypeRouter,
+	calendarRouter,
+	tagRouter,
+	bannerRouter,
 };

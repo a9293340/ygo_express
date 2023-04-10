@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
+
 <body>
     Admin
     <button onclick="find()">list</button>
@@ -51,8 +53,14 @@
     <button onclick="CardsList()">list</button>
     <button onclick="CardsAdd()">Add</button>
     <button onclick="CardsEdit()">Edit</button>
+    <br>
+    <br>
+    <br>
+    Calendar
+    <button onclick="CalendarList()">list</button>
+    <button onclick="CalendarAdd()">Add</button>
+    <button onclick="CalendarEdit()">Edit</button>
 
-    <img id="aaa" src="" alt="">
 
 
 
@@ -68,17 +76,19 @@
         function create() {
             const datasss = {
                 token,
-                tokenReq:"alex9527",
+                tokenReq: "alex9527",
                 name: 'Eric555',
                 account: 'alex22232',
                 create_date: '2023/03/14',
                 password: 'alex2223',
-                email:"alex1234@gmail.com",
+                email: "alex1234@gmail.com",
                 type: 0,
             };
             const obj = CryptoJS.AES.encrypt(JSON.stringify(datasss), 'C8763').toString()
             axios
-                .post('http://localhost:3000/api/admin/add', {data:obj})
+                .post('http://localhost:3300/api/admin/add', {
+                    data: obj
+                })
                 .then(res => {
                     console.log(res)
                 })
@@ -86,19 +96,22 @@
                     console.log(e);
                 });
         }
-        function edit(){
+
+        function edit() {
             const edit = {
                 token,
-                tokenReq:"alex2223",
+                tokenReq: "alex2223",
                 _id: '6419c838d4b5d905bb2c9aaf',
-                type:0,
+                type: 0,
                 name: '王子恆2',
                 photo: '',
                 status: 0
             }
             const obj = CryptoJS.AES.encrypt(JSON.stringify(edit), 'C8763').toString()
             axios
-                .post('http://localhost:3000/api/admin/edit', {data:obj})
+                .post('http://localhost:3300/api/admin/edit', {
+                    data: obj
+                })
                 .then(res => {
                     console.log(res)
                 })
@@ -106,29 +119,39 @@
                     console.log(e);
                 });
         }
-        function find(){
+
+        function find() {
             const find = {
                 token,
-                tokenReq:"alex2223",
+                tokenReq: "alex2223",
                 page: 0,
                 limit: 2,
                 filter: {
                     type: 0,
                     status: 0
-                }}
+                }
+            }
             const obj = CryptoJS.AES.encrypt(JSON.stringify(find), 'C8763').toString()
-            axios.post('http://localhost:3000/api/admin/list',{data:obj}).then( res => {
+            axios.post('http://localhost:3300/api/admin/list', {
+                data: obj
+            }).then(res => {
                 const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
                 console.log(ans)
             })
         }
+
         function login() {
-            const data = {account: 'alex2223',password: 'alex2223'}
+            const data = {
+                account: 'alex2223',
+                password: 'alex2223'
+            }
             const obj = CryptoJS.AES.encrypt(JSON.stringify(data), 'C8763').toString()
             let de = CryptoJS.AES.decrypt(obj, "C8763")
             console.log(obj)
             axios
-                .post('http://localhost:3000/api/admin/login', {data:obj})
+                .post('http://localhost:3300/api/admin/login', {
+                    data: obj
+                })
                 .then(res => {
                     const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
                     console.log(ans)
@@ -138,308 +161,347 @@
                     console.log(e);
                 });
         }
-        function logout(){
-            const data = {token : token,tokenReq: 'alex2223'}
+
+        function logout() {
+            const data = {
+                token: token,
+                tokenReq: 'alex2223'
+            }
             const obj = CryptoJS.AES.encrypt(JSON.stringify(data), 'C8763').toString()
             axios
-                .post('http://localhost:3000/api/admin/logout', {data:obj})
+                .post('http://localhost:3300/api/admin/logout', {
+                    data: obj
+                })
                 .then(res => {
                     console.log(res)
-                    token = ''})
+                    token = ''
+                })
                 .catch(e => {
                     console.log(e);
                 });
         }
         // Series Introduction
-        function SIList (){
+        function SIList() {
             const find = {
                 token,
-                tokenReq:"alex2223",
+                tokenReq: "alex2223",
                 page: 0,
                 limit: 2,
                 filter: {
                     type: 0,
                     status: 0,
                     begin_date: '2022-10-1',
-                    end_date : '2023-01-31'
-                }}
+                    end_date: '2023-01-31'
+                }
+            }
             const obj = CryptoJS.AES.encrypt(JSON.stringify(find), 'C8763').toString()
-            axios.post('http://localhost:3000/api/serialIntroduction/articleList',{data:obj}).then( res => {
+            axios.post('http://localhost:3300/api/serialIntroduction/articleList', {
+                data: obj
+            }).then(res => {
                 const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
-                console.log(ans,res.data.error_code)
+                console.log(ans, res.data.error_code)
             })
         }
 
-        function SIAdd () {
+        function SIAdd() {
             const addSi = {
                 token,
-                tokenReq:"alex2223",
-                type:0,
-                title:'主題牌組 : 榮睿超人44444',
+                tokenReq: "alex2223",
+                type: 0,
+                title: '主題牌組 : 榮睿超人44444',
                 publish_date: "2023/03/29",
-                photo:'',
-                content:'榮睿好酷4444',
-                author_name:'alex2223',
-                author_id:'6419c838d4b5d905bb2c9aaf',
-                tag: ['酷酷','憨憨','我好酷']
+                photo: '',
+                content: '榮睿好酷4444',
+                author_name: 'alex2223',
+                author_id: '6419c838d4b5d905bb2c9aaf',
+                tag: ['酷酷', '憨憨', '我好酷']
             }
             const obj = CryptoJS.AES.encrypt(JSON.stringify(addSi), 'C8763').toString()
-            axios.post('http://localhost:3000/api/serialIntroduction/addArticle',{data:obj}).then( res => {
+            axios.post('http://localhost:3300/api/serialIntroduction/addArticle', {
+                data: obj
+            }).then(res => {
                 const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
-                console.log(ans,res.data.error_code)
+                console.log(ans, res.data.error_code)
             })
         }
 
-        function SIEdit () {
+        function SIEdit() {
             const addSi = {
                 token,
-                tokenReq:"alex2223",
-                type:0,
-                title:'主題牌組 : 榮睿超人22444',
+                tokenReq: "alex2223",
+                type: 0,
+                title: '主題牌組 : 榮睿超人22444',
                 publish_date: "2023/03/28 4:44:38",
-                photo:'',
-                content:'榮睿好酷22442',
-                author_name:'榮睿兄',
-                author_id:'6419c838d4b5d905bb2c9aaf',
-                tag: ['酷酷','憨憨','呆呆'],
-                status:1,
-                to_top:true,
+                photo: '',
+                content: '榮睿好酷22442',
+                author_name: '榮睿兄',
+                author_id: '6419c838d4b5d905bb2c9aaf',
+                tag: ['酷酷', '憨憨', '呆呆'],
+                status: 1,
+                to_top: true,
                 _id: '6422f3dabc71d589de631423'
             }
             const obj = CryptoJS.AES.encrypt(JSON.stringify(addSi), 'C8763').toString()
-            axios.post('http://localhost:3000/api/serialIntroduction/editArticle',{data:obj}).then( res => {
+            axios.post('http://localhost:3300/api/serialIntroduction/editArticle', {
+                data: obj
+            }).then(res => {
                 const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
-                console.log(ans,res.data.error_code)
+                console.log(ans, res.data.error_code)
             })
         }
 
         // useful_card_introduction
-        function UCIList (){
+        function UCIList() {
             const find = {
                 token,
-                tokenReq:"alex2223",
+                tokenReq: "alex2223",
                 page: 0,
                 limit: 2,
                 filter: {
                     type: 0,
                     status: 0,
                     begin_date: '2022-10-1',
-                    end_date : '2023-01-31'
-                }}
+                    end_date: '2023-01-31'
+                }
+            }
             const obj = CryptoJS.AES.encrypt(JSON.stringify(find), 'C8763').toString()
-            axios.post('http://localhost:3000/api/usefulCardIntroduction/articleList',{data:obj}).then( res => {
+            axios.post('http://localhost:3300/api/usefulCardIntroduction/articleList', {
+                data: obj
+            }).then(res => {
                 const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
-                console.log(ans,res.data.error_code)
+                console.log(ans, res.data.error_code)
             })
         }
 
-        function UCIAdd () {
+        function UCIAdd() {
             const addSi = {
                 token,
-                tokenReq:"alex2223",
-                type:0,
-                title:'超殺神卡 : 謝榮睿',
+                tokenReq: "alex2223",
+                type: 0,
+                title: '超殺神卡 : 謝榮睿',
                 publish_date: "2023/03/29 4:44:44",
-                photo:'',
-                content:'榮睿好酷4444  7788',
-                author_name:'alex2223',
-                author_id:'6419c838d4b5d905bb2c9aaf',
-                tag: ['酷酷','憨憨','我好酷']
+                photo: '',
+                content: '榮睿好酷4444  7788',
+                author_name: 'alex2223',
+                author_id: '6419c838d4b5d905bb2c9aaf',
+                tag: ['酷酷', '憨憨', '我好酷']
             }
             const obj = CryptoJS.AES.encrypt(JSON.stringify(addSi), 'C8763').toString()
-            axios.post('http://localhost:3000/api/usefulCardIntroduction/addArticle',{data:obj}).then( res => {
+            axios.post('http://localhost:3300/api/usefulCardIntroduction/addArticle', {
+                data: obj
+            }).then(res => {
                 const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
-                console.log(ans,res.data.error_code)
+                console.log(ans, res.data.error_code)
             })
         }
 
-        function UCIEdit () {
+        function UCIEdit() {
             const addSi = {
                 token,
-                tokenReq:"alex2223",
-                type:0,
-                title:'超殺神卡 : 謝榮睿達人',
+                tokenReq: "alex2223",
+                type: 0,
+                title: '超殺神卡 : 謝榮睿達人',
                 publish_date: "2023/03/28 4:44:38",
-                photo:'',
-                content:'榮睿好酷22442',
-                author_name:'榮睿兄',
-                author_id:'6419c838d4b5d905bb2c9aaf',
-                tag: ['酷酷','憨憨','先睡一下'],
-                status:1,
-                to_top:true,
+                photo: '',
+                content: '榮睿好酷22442',
+                author_name: '榮睿兄',
+                author_id: '6419c838d4b5d905bb2c9aaf',
+                tag: ['酷酷', '憨憨', '先睡一下'],
+                status: 1,
+                to_top: true,
                 _id: '64230165be5edd8ddfd25ffd'
             }
             const obj = CryptoJS.AES.encrypt(JSON.stringify(addSi), 'C8763').toString()
-            axios.post('http://localhost:3000/api/usefulCardIntroduction/editArticle',{data:obj}).then( res => {
+            axios.post('http://localhost:3300/api/usefulCardIntroduction/editArticle', {
+                data: obj
+            }).then(res => {
                 const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
-                console.log(ans,res.data.error_code)
+                console.log(ans, res.data.error_code)
             })
         }
 
         //     meta_deck
 
-        function MDList (){
+        function MDList() {
             const find = {
                 token,
-                tokenReq:"alex2223",
+                tokenReq: "alex2223",
                 page: 0,
                 limit: 2,
                 filter: {
                     type: 0,
                     status: 0,
                     begin_date: '2022-10-1',
-                    end_date : '2023-01-31'
-                }}
+                    end_date: '2023-01-31'
+                }
+            }
             const obj = CryptoJS.AES.encrypt(JSON.stringify(find), 'C8763').toString()
-            axios.post('http://localhost:3000/api/metaDeck/articleList',{data:obj}).then( res => {
+            axios.post('http://localhost:3300/api/metaDeck/articleList', {
+                data: obj
+            }).then(res => {
                 const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
-                console.log(ans,res.data.error_code)
+                console.log(ans, res.data.error_code)
             })
         }
 
-        function MDAdd () {
+        function MDAdd() {
             const addSi = {
                 token,
-                tokenReq:"alex2223",
-                type:0,
-                title:'都已經是輪椅還能上位 太神了吧 14why',
+                tokenReq: "alex2223",
+                type: 0,
+                title: '都已經是輪椅還能上位 太神了吧 14why',
                 publish_date: "2023/03/29 4:44:44",
-                photo:'',
-                content:'榮睿好酷4444  7788',
-                author_name:'alex2223',
-                author_id:'6419c838d4b5d905bb2c9aaf',
-                tag: ['酷酷','憨憨','我好酷']
+                photo: '',
+                content: '榮睿好酷4444  7788',
+                author_name: 'alex2223',
+                author_id: '6419c838d4b5d905bb2c9aaf',
+                tag: ['酷酷', '憨憨', '我好酷']
             }
             const obj = CryptoJS.AES.encrypt(JSON.stringify(addSi), 'C8763').toString()
-            axios.post('http://localhost:3000/api/metaDeck/addArticle',{data:obj}).then( res => {
+            axios.post('http://localhost:3300/api/metaDeck/addArticle', {
+                data: obj
+            }).then(res => {
                 const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
-                console.log(ans,res.data.error_code)
+                console.log(ans, res.data.error_code)
             })
         }
 
-        function MDEdit(){
+        function MDEdit() {
             const addSi = {
                 token,
-                tokenReq:"alex2223",
-                type:0,
-                title:'都已經是輪椅還能上位 太神了吧 14why 2222',
+                tokenReq: "alex2223",
+                type: 0,
+                title: '都已經是輪椅還能上位 太神了吧 14why 2222',
                 publish_date: "2023/03/28 4:44:38",
-                photo:'',
-                content:'榮睿好酷22442',
-                author_name:'榮睿兄 444',
-                author_id:'6419c838d4b5d905bb2c9aaf',
-                tag: ['酷酷','憨憨','先睡一下'],
-                status:1,
-                to_top:true,
+                photo: '',
+                content: '榮睿好酷22442',
+                author_name: '榮睿兄 444',
+                author_id: '6419c838d4b5d905bb2c9aaf',
+                tag: ['酷酷', '憨憨', '先睡一下'],
+                status: 1,
+                to_top: true,
                 _id: '64258f0bef5affc4a72359ba'
             }
             const obj = CryptoJS.AES.encrypt(JSON.stringify(addSi), 'C8763').toString()
-            axios.post('http://localhost:3000/api/metaDeck/editArticle',{data:obj}).then( res => {
+            axios.post('http://localhost:3300/api/metaDeck/editArticle', {
+                data: obj
+            }).then(res => {
                 const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
-                console.log(ans,res.data.error_code)
+                console.log(ans, res.data.error_code)
             })
         }
 
         //     product information
 
-        function PIList (){
+        function PIList() {
             const find = {
                 token,
-                tokenReq:"alex2223",
+                tokenReq: "alex2223",
                 page: 0,
                 limit: 2,
                 filter: {
                     type: 0,
                     status: 0,
                     begin_date: '2022-10-1',
-                    end_date : '2023-01-31'
-                }}
+                    end_date: '2023-01-31'
+                }
+            }
             const obj = CryptoJS.AES.encrypt(JSON.stringify(find), 'C8763').toString()
-            axios.post('http://localhost:3000/api/productInformation/articleList',{data:obj}).then( res => {
+            axios.post('http://localhost:3300/api/productInformation/articleList', {
+                data: obj
+            }).then(res => {
                 const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
-                console.log(ans,res.data.error_code)
+                console.log(ans, res.data.error_code)
             })
         }
 
-        function PIAdd () {
+        function PIAdd() {
             const addSi = {
                 token,
-                tokenReq:"alex2223",
-                type:0,
-                title:'都已經是輪椅還能上位 太神了吧 14why',
+                tokenReq: "alex2223",
+                type: 0,
+                title: '都已經是輪椅還能上位 太神了吧 14why',
                 publish_date: "2023/03/29 4:44:44",
-                photo:'',
-                content:'榮睿好酷4444  7788',
-                author_name:'alex2223',
-                author_id:'6419c838d4b5d905bb2c9aaf',
-                tag: ['酷酷','憨憨','我好酷']
+                photo: '',
+                content: '榮睿好酷4444  7788',
+                author_name: 'alex2223',
+                author_id: '6419c838d4b5d905bb2c9aaf',
+                tag: ['酷酷', '憨憨', '我好酷']
             }
             const obj = CryptoJS.AES.encrypt(JSON.stringify(addSi), 'C8763').toString()
-            axios.post('http://localhost:3000/api/productInformation/addArticle',{data:obj}).then( res => {
+            axios.post('http://localhost:3300/api/productInformation/addArticle', {
+                data: obj
+            }).then(res => {
                 const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
-                console.log(ans,res.data.error_code)
+                console.log(ans, res.data.error_code)
             })
         }
 
-        function PIEdit(){
+        function PIEdit() {
             const addSi = {
                 token,
-                tokenReq:"alex2223",
-                type:0,
-                title:'都已經是輪椅還能上位 太神了吧 14why 2222',
+                tokenReq: "alex2223",
+                type: 0,
+                title: '都已經是輪椅還能上位 太神了吧 14why 2222',
                 publish_date: "2023/03/28 4:44:38",
-                photo:'',
-                content:'榮睿好酷22442',
-                author_name:'榮睿兄 444',
-                author_id:'6419c838d4b5d905bb2c9aaf',
-                tag: ['酷酷','憨憨','先睡一下'],
-                status:1,
-                to_top:true,
+                photo: '',
+                content: '榮睿好酷22442',
+                author_name: '榮睿兄 444',
+                author_id: '6419c838d4b5d905bb2c9aaf',
+                tag: ['酷酷', '憨憨', '先睡一下'],
+                status: 1,
+                to_top: true,
                 _id: '64258f0bef5affc4a72359ba'
             }
             const obj = CryptoJS.AES.encrypt(JSON.stringify(addSi), 'C8763').toString()
-            axios.post('http://localhost:3000/api/productInformation/editArticle',{data:obj}).then( res => {
+            axios.post('http://localhost:3300/api/productInformation/editArticle', {
+                data: obj
+            }).then(res => {
                 const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
-                console.log(ans,res.data.error_code)
+                console.log(ans, res.data.error_code)
             })
         }
 
         //    production Information Type
-        function PITList(){
+        function PITList() {
             const data = {
                 token,
-                tokenReq:"alex2223",
+                tokenReq: "alex2223",
             }
             const obj = CryptoJS.AES.encrypt(JSON.stringify(data), 'C8763').toString()
-            axios.post('http://localhost:3000/api/productionInformationType/list',{data:obj}).then( res => {
+            axios.post('http://localhost:3300/api/productionInformationType/list', {
+                data: obj
+            }).then(res => {
                 const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
-                console.log(ans,res.data.error_code)
+                console.log(ans, res.data.error_code)
             })
         }
 
         //  cards
-        function CardsList(){
+        function CardsList() {
             console.log('Cards')
             const data = {
                 token,
-                tokenReq:"alex2223",
+                tokenReq: "alex2223",
                 page: 0,
                 limit: 2,
-                filter:{
-                    number: ['99543666','92895501']
+                filter: {
+                    number: ['00010000', '10002346']
                 }
             }
             const obj = CryptoJS.AES.encrypt(JSON.stringify(data), 'C8763').toString()
-            axios.post('http://localhost:3000/api/cards/list',{data:obj}).then( res => {
+            axios.post('http://localhost:3300/api/cards/list', {
+                data: obj
+            }).then(res => {
                 const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
-                console.log(ans,res.data.error_code)
+                console.log(ans, res.data.error_code)
             })
         }
 
-        function CardsAdd(){
+        function CardsAdd() {
             const data = {
                 token,
-                tokenReq:"alex2223",
+                tokenReq: "alex2223",
                 "number": "99543666",
                 "name": "烙印劇城絕望戲曲",
                 "type": "",
@@ -455,17 +517,19 @@
                 "product_information_type": "DAMA"
             }
             const obj = CryptoJS.AES.encrypt(JSON.stringify(data), 'C8763').toString()
-            axios.post('http://localhost:3000/api/cards/add',{data:obj}).then( res => {
+            axios.post('http://localhost:3300/api/cards/add', {
+                data: obj
+            }).then(res => {
                 const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
-                console.log(ans,res.data.error_code)
+                console.log(ans, res.data.error_code)
             })
         }
 
-        function CardsEdit(){
+        function CardsEdit() {
             const data = {
                 token,
-                tokenReq:"alex2223",
-                "_id":'643188ad5eb9f075503fbb27',
+                tokenReq: "alex2223",
+                "_id": '643188ad5eb9f075503fbb27',
                 "number": "99543666",
                 "name": "烙印劇城絕望戲曲2",
                 "type": "",
@@ -481,11 +545,70 @@
                 "product_information_type": "DAMA"
             }
             const obj = CryptoJS.AES.encrypt(JSON.stringify(data), 'C8763').toString()
-            axios.post('http://localhost:3000/api/cards/edit',{data:obj}).then( res => {
+            axios.post('http://localhost:3300/api/cards/edit', {
+                data: obj
+            }).then(res => {
                 const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
-                console.log(ans,res.data.error_code)
+                console.log(ans, res.data.error_code)
+            })
+        }
+
+        function CalendarList() {
+            const data = {
+                token,
+                tokenReq: "alex2223",
+                filter: {
+                    date: '2022-10-15 13:32:33'
+                }
+            }
+            const obj = CryptoJS.AES.encrypt(JSON.stringify(data), 'C8763').toString()
+            axios.post('http://localhost:3300/api/calendar/list', {
+                data: obj
+            }).then(res => {
+                const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
+                console.log(ans, res.data.error_code)
+            })
+        }
+
+        function CalendarAdd() {
+            const data = {
+                token,
+                tokenReq: "alex9527",
+                title: "小小杯店家賽2",
+                date: "2023-04-09 12:00:00",
+                url: "",
+                content: "只能使用攻擊力小於500的怪獸",
+                type: 0
+            }
+            const obj = CryptoJS.AES.encrypt(JSON.stringify(data), 'C8763').toString()
+            axios.post('http://localhost:3300/api/calendar/add', {
+                data: obj
+            }).then(res => {
+                const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
+                console.log(ans, res.data.error_code)
+            })
+        }
+
+        function CalendarEdit() {
+            const data = {
+                token,
+                tokenReq: 'alex9527',
+                _id: '6433c7042f2b97e61980be5d',
+                title: "小小杯店家賽",
+                date: "2023-04-06 13:00:00",
+                url: "",
+                content: "只能使用攻擊力小於500的怪獸,不能用魔陷",
+                type: 0
+            }
+            const obj = CryptoJS.AES.encrypt(JSON.stringify(data), 'C8763').toString()
+            axios.post('http://localhost:3300/api/calendar/edit', {
+                data: obj
+            }).then(res => {
+                const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
+                console.log(ans, res.data.error_code)
             })
         }
     </script>
 </body>
+
 </html>
