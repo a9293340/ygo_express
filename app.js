@@ -20,6 +20,8 @@ const {
 	calendarRouter,
 	tagRouter,
 	bannerRouter,
+	packTypeRouter,
+	permissionRouter,
 } = require('./routes/index');
 
 const http = require('http');
@@ -50,6 +52,8 @@ app.use('/api/productionInformationType', productionInformationTypeRouter);
 app.use('/api/calendar', calendarRouter);
 app.use('/api/tag', tagRouter);
 app.use('/api/banner', bannerRouter);
+app.use('/api/packType', packTypeRouter);
+app.use('/api/permission', permissionRouter);
 
 app.get('/', (req, res) => {
 	res.sendfile('./views/index.html');

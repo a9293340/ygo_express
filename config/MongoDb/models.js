@@ -152,8 +152,8 @@ const banner = new mongoose.Schema({
 
 const product_information_type = new mongoose.Schema({
 	packType: { type: String },
-	subtype: { type: String },
-	maintype: { type: Number },
+	subType: { type: String },
+	mainType: { type: Number },
 	status: { type: Number },
 	name: { type: String },
 });
@@ -174,6 +174,12 @@ const backend_token = new mongoose.Schema({
 	tokenReq: { type: String },
 });
 
+const permission = new mongoose.Schema({
+	name: { type: String },
+	permission: { type: Array },
+	type: { type: Number },
+});
+
 module.exports = {
 	admin,
 	series_introduction,
@@ -192,4 +198,5 @@ module.exports = {
 	frontend_token,
 	backend_token,
 	cards_image,
+	permission,
 };

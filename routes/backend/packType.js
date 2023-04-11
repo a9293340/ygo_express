@@ -1,0 +1,34 @@
+const express = require('express');
+const { limiter } = require('../../config/tools/rate-limiter');
+const { checkToken, decryptRes } = require('../../config/tools/encryptNToken');
+const {
+	canNotBeSameBeforeAdd,
+	pList,
+} = require('../../config/tools/postAction');
+const { articleEdit } = require('../../config/tools/articleApi');
+const router = express.Router();
+
+router.post('/add', limiter, checkToken, async (req, res, next) => {
+	const { token, tokenReq, ...useful } = decryptRes(req.body.data);
+	canNotBeSameBeforeAdd(
+		res,
+		next,
+		'product_information_type',
+		useful,
+		'name'
+	);
+});
+
+router.post('/list', limiter, checkToken, (req, res, next) => {
+	const { filter, limit, page } = decryptRes(req.body.data);
+	pList(res, next, 'product_information_type', filter, false, {
+		limit,
+		page,
+	});
+});
+
+router.post('/edit', limiter, checkToken, async (req, res, next) => {
+	articleEdit(req, res, next, 'product_information_type');
+});
+
+module.exports = router;

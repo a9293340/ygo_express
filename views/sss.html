@@ -28,6 +28,22 @@
   <button onclick="BannerAdd()">Add</button>
   <button onclick="BannerList()">List</button>
   <button onclick="BannerEdit()">Edit</button>
+  <br>
+  <br>
+  <br>
+  <br>
+  PackType
+  <button onclick="PackTypeAdd()">Add</button>
+  <button onclick="PackTypeList()">List</button>
+  <button onclick="PackTypeEdit()">Edit</button>
+  <br>
+  <br>
+  <br>
+  <br>
+  Permission
+  <button onclick="PermissionAdd()">Add</button>
+
+
 
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.4/axios.min.js"></script>
@@ -57,6 +73,79 @@
         .catch(e => {
           console.log(e);
         });
+    }
+
+    function PermissionAdd() {
+      const data = {
+        token,
+        tokenReq: "alex9527",
+        "name": "前台用戶",
+        permission: [],
+        type: 2
+      }
+      const obj = CryptoJS.AES.encrypt(JSON.stringify(data), 'C8763').toString()
+      axios.post('http://localhost:3300/api/permission/add', {
+        data: obj
+      }).then(res => {
+        const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
+        console.log(ans, res.data.error_code)
+      })
+    }
+
+    function PackTypeAdd() {
+      const data = {
+        token,
+        tokenReq: "alex9527",
+        "name": "【1112 電子風暴】(CYAC)",
+        "packType": "CYAC",
+        "subType": "第十一期",
+        "mainType": 0,
+        "status": 0
+      }
+      const obj = CryptoJS.AES.encrypt(JSON.stringify(data), 'C8763').toString()
+      axios.post('http://localhost:3300/api/packType/add', {
+        data: obj
+      }).then(res => {
+        const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
+        console.log(ans, res.data.error_code)
+      })
+    }
+
+    function PackTypeEdit() {
+      const data = {
+        token,
+        tokenReq: "alex9527",
+        _id: '6435067da50b91d395d699ec',
+        "name": "【1112 電子風暴】(CYAC)",
+        "packType": "CYAC",
+        "subType": "第十一期",
+        "mainType": 0,
+        "status": 0
+      }
+      const obj = CryptoJS.AES.encrypt(JSON.stringify(data), 'C8763').toString()
+      axios.post('http://localhost:3300/api/packType/edit', {
+        data: obj
+      }).then(res => {
+        const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
+        console.log(ans, res.data.error_code)
+      })
+    }
+
+    function PackTypeList() {
+      const data = {
+        token,
+        tokenReq: "alex9527",
+        page: 1,
+        limit: 1,
+        filter: {}
+      }
+      const obj = CryptoJS.AES.encrypt(JSON.stringify(data), 'C8763').toString()
+      axios.post('http://localhost:3300/api/packType/list', {
+        data: obj
+      }).then(res => {
+        const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
+        console.log(ans, res.data.error_code)
+      })
     }
 
     function BannerAdd() {

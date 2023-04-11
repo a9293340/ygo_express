@@ -60,8 +60,26 @@ const pEdit = async (res, next, modelName, use, _id) => {
 	});
 };
 
+const canNotBeSameBeforeAdd = async (
+	res,
+	next,
+	modelName,
+	useful,
+	checkKey
+) => {
+	if (!useful[checkKey]) next(10004);
+	else {
+		let obj = {};
+		obj[checkKey] = useful[checkKey];
+		const arr = await MongooseCRUD('R', modelName, obj);
+		if (arr.length) next(10012);
+		else pAdd(res, next, modelName, useful);
+	}
+};
+
 module.exports = {
 	pList,
 	pAdd,
 	pEdit,
+	canNotBeSameBeforeAdd,
 };

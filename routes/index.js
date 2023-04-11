@@ -11,6 +11,8 @@ const productionInformationTypeRouter = require('./backend/productionInformation
 const calendarRouter = require('./backend/calendar');
 const tagRouter = require('./backend/tag');
 const bannerRouter = require('./backend/banner');
+const packTypeRouter = require('./backend/packType');
+const permissionRouter = require('./backend/permission');
 
 module.exports = {
 	adminRouter,
@@ -26,4 +28,6 @@ module.exports = {
 	calendarRouter,
 	tagRouter,
 	bannerRouter,
+	packTypeRouter,
+	permissionRouter,
 };
