@@ -42,6 +42,8 @@
   <br>
   Permission
   <button onclick="PermissionAdd()">Add</button>
+  <button onclick="PermissionEdit()">Edit</button>
+  <button onclick="PermissionList()">List</button>
 
 
 
@@ -80,11 +82,78 @@
         token,
         tokenReq: "alex9527",
         "name": "前台用戶",
-        permission: [],
+        permission: {
+          member: false,
+          banner: false,
+          series_introduction: false,
+          useful_card_introduction: false,
+          meta_deck: false,
+          production_information: false,
+          rules: false,
+          series_story: false,
+          battle_paper: false,
+          calendar: false,
+          deck: false,
+          cards: false,
+          tag: false,
+          pack_type: false,
+          permit: false,
+        },
         type: 2
       }
       const obj = CryptoJS.AES.encrypt(JSON.stringify(data), 'C8763').toString()
       axios.post('http://localhost:3300/api/permission/add', {
+        data: obj
+      }).then(res => {
+        const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
+        console.log(ans, res.data.error_code)
+      })
+    }
+
+    function PermissionEdit() {
+      const data = {
+        token,
+        tokenReq: "alex9527",
+        name: "前台用戶",
+        _id: '643516a80dd49ec42dbb484a',
+        permission: {
+          member: false,
+          banner: false,
+          series_introduction: false,
+          useful_card_introduction: false,
+          meta_deck: false,
+          production_information: false,
+          rules: false,
+          series_story: false,
+          battle_paper: false,
+          calendar: false,
+          deck: false,
+          cards: false,
+          tag: false,
+          pack_type: false,
+          permit: false,
+        },
+        type: 2
+      }
+      const obj = CryptoJS.AES.encrypt(JSON.stringify(data), 'C8763').toString()
+      axios.post('http://localhost:3300/api/permission/edit', {
+        data: obj
+      }).then(res => {
+        const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))
+        console.log(ans, res.data.error_code)
+      })
+    }
+
+    function PermissionList() {
+      const data = {
+        token,
+        tokenReq: "alex9527",
+        page: 1,
+        limit: 1,
+        filter: {}
+      }
+      const obj = CryptoJS.AES.encrypt(JSON.stringify(data), 'C8763').toString()
+      axios.post('http://localhost:3300/api/permission/list', {
         data: obj
       }).then(res => {
         const ans = JSON.parse(CryptoJS.AES.decrypt(res.data.data, "C8763").toString(CryptoJS.enc.Utf8))

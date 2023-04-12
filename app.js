@@ -22,6 +22,7 @@ const {
 	bannerRouter,
 	packTypeRouter,
 	permissionRouter,
+	cardsImageRouter,
 } = require('./routes/index');
 
 const http = require('http');
@@ -54,6 +55,7 @@ app.use('/api/tag', tagRouter);
 app.use('/api/banner', bannerRouter);
 app.use('/api/packType', packTypeRouter);
 app.use('/api/permission', permissionRouter);
+app.use('/api/cardsImage', cardsImageRouter);
 
 app.get('/', (req, res) => {
 	res.sendfile('./views/index.html');

@@ -13,6 +13,7 @@ const tagRouter = require('./backend/tag');
 const bannerRouter = require('./backend/banner');
 const packTypeRouter = require('./backend/packType');
 const permissionRouter = require('./backend/permission');
+const cardsImageRouter = require('./backend/cardsImage');
 
 module.exports = {
 	adminRouter,
@@ -30,4 +31,5 @@ module.exports = {
 	bannerRouter,
 	packTypeRouter,
 	permissionRouter,
+	cardsImageRouter,
 };
