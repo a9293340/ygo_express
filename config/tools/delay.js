@@ -1,5 +1,9 @@
-export const delay = async time => {
-    return new Promise(resolve => {
-        setTimeout(resolve, time);
-    });
+const delay = async (time) => {
+	return new Promise((resolve) => {
+		setTimeout(resolve, time);
+	});
+};
+
+module.exports = {
+	delay,
 };

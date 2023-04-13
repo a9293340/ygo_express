@@ -1,8 +1,10 @@
-import request from 'request-promise';
+const request = require('request-promise');
 
-export const reptileTargetUrl = async url =>
-    request({
-        url,
-        method: 'GET',
-        encoding: null,
-    });
+const reptileTargetUrl = async (url) =>
+	request({
+		url,
+		method: 'GET',
+		encoding: null,
+	});
+
+module.exports = { reptileTargetUrl };
