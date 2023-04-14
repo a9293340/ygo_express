@@ -483,10 +483,17 @@
             const data = {
                 token,
                 tokenReq: "alex2223",
-                page: 0,
+                page: 1,
                 limit: 2,
                 filter: {
-                    name: '萬物'
+                    atk_l: 2800,
+                    atk_t: 3500,
+                    def_l: 2000,
+                    def_t: 2600,
+                    attribute: '光',
+                    id: '20TH',
+                    star: '等級8',
+                    name: '青眼'
                 }
             }
             const obj = CryptoJS.AES.encrypt(JSON.stringify(data), 'C8763').toString()

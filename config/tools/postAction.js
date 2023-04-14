@@ -71,6 +71,29 @@ const pEdit = async (res, next, modelName, use, _id) => {
 	});
 };
 
+const pAggregate = async (res, modelName, target, hasPage) => {
+	MongooseCRUD('A', modelName, target, {}, {}).then((arr, err) => {
+		if (err) next(err);
+		else if (
+			hasPage &&
+			(!Number.isInteger(hasPage.limit) ||
+				!Number.isInteger(hasPage.page))
+		) {
+			next(10004);
+		}
+		res.status(200).json({
+			error_code: 0,
+			data: encryptRes({
+				total: arr.length,
+				list: arr.slice(
+					hasPage.page * hasPage.limit,
+					(hasPage.page + 1) * hasPage.limit
+				),
+			}),
+		});
+	});
+};
+
 const canNotBeSameBeforeAdd = async (
 	res,
 	next,
@@ -93,4 +116,5 @@ module.exports = {
 	pAdd,
 	pEdit,
 	canNotBeSameBeforeAdd,
+	pAggregate,
 };
