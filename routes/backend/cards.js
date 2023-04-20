@@ -54,6 +54,8 @@ router.post('/list', limiter, checkToken, async (req, res, next) => {
 		});
 	}
 	aggregateFilter.push({ $match: target });
+	aggregateFilter.push({ $skip: page * limit });
+	aggregateFilter.push({ $limit: limit });
 
 	pAggregate(res, 'cards', aggregateFilter, { limit, page });
 });

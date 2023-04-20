@@ -331,8 +331,8 @@
                 filter: {
                     type: 0,
                     status: 0,
-                    begin_date: '2022-10-1',
-                    end_date: '2023-01-31'
+                    begin_date: '2023-4-1',
+                    end_date: '2023-4-10'
                 }
             }
             const obj = CryptoJS.AES.encrypt(JSON.stringify(find), 'C8763').toString()
@@ -483,15 +483,14 @@
             const data = {
                 token,
                 tokenReq: "alex2223",
-                page: 1,
-                limit: 2,
+                page: 0,
+                limit: 4,
                 filter: {
                     atk_l: 2800,
                     atk_t: 3500,
                     def_l: 2000,
                     def_t: 2600,
                     attribute: '光',
-                    id: '20TH',
                     star: '等級8',
                     name: '青眼'
                 }

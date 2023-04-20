@@ -9,6 +9,7 @@ const {
 	encryptRes,
 } = require('../../config/tools/encryptNToken');
 const { limiter } = require('../../config/tools/rate-limiter');
+const { pList } = require('../../config/tools/postAction');
 
 // Log in
 router.post('/login', limiter, async (req, res, next) => {
@@ -52,21 +53,7 @@ router.post('/logout', limiter, checkToken, async (req, res, next) => {
 // list
 router.post('/list', limiter, checkToken, (req, res, next) => {
 	const { filter, limit, page } = decryptRes(req.body.data);
-	console.log(filter, limit, page);
-	MongooseCRUD('R', 'admin', filter, {}, {}).then((arr, err) => {
-		if (err) next(err);
-		else if (!Number.isInteger(limit) || !Number.isInteger(page))
-			next(10004);
-		else {
-			res.status(200).json({
-				error_code: 0,
-				data: encryptRes({
-					total: arr.length,
-					list: arr.slice(page * limit, (page + 1) * limit),
-				}),
-			});
-		}
-	});
+	pList(res, next, 'admin', filter, false, { limit, page });
 });
 
 // Add

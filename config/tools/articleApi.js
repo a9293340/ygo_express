@@ -15,10 +15,25 @@ const articleList = (req, res, next, modelName) => {
 					},
 					status: filter.status,
 			  };
-	pList(res, next, modelName, target, true, {
-		limit,
-		page,
-	});
+	let projection =
+		token === 'frontend' && filter._id
+			? {}
+			: {
+					content: 0,
+			  };
+	// console.log(projection);
+	pList(
+		res,
+		next,
+		modelName,
+		target,
+		true,
+		{
+			limit,
+			page,
+		},
+		projection
+	);
 };
 
 const articleCreate = (req, res, next, modelName) => {
