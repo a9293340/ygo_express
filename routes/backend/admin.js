@@ -26,6 +26,7 @@ router.post('/login', limiter, async (req, res, next) => {
 				)
 					next(11002);
 				else if (arr[0].type >= 2) next(11004);
+				else if (arr[0].status) next(10008);
 				else {
 					const tokenArr = await MongooseCRUD('R', 'backend_token', {
 						tokenReq: user.account,
