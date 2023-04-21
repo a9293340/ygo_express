@@ -73,11 +73,15 @@ const pAdd = (res, next, modelName, use) => {
 const pEdit = async (res, next, modelName, use, _id) => {
 	if (modelName === 'permission')
 		use.permission = makePermission(use.permission);
-	let arr = await MongooseCRUD('Uo', modelName, { _id }, use);
-	res.status(200).json({
-		error_code: !arr['matchedCount'] ? 10007 : 0,
-		data: encryptRes({}),
-	});
+	try {
+		let arr = await MongooseCRUD('Uo', modelName, { _id }, use);
+		res.status(200).json({
+			error_code: !arr['matchedCount'] ? 10007 : 0,
+			data: encryptRes({}),
+		});
+	} catch (error) {
+		next(10003);
+	}
 };
 
 const pAggregate = async (res, modelName, target, hasPage) => {

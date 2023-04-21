@@ -6,7 +6,10 @@ const {
 	fuzzySearch,
 } = require('../../config/tools/encryptNToken');
 const { limiter } = require('../../config/tools/rate-limiter');
-const { pAggregate } = require('../../config/tools/postAction');
+const {
+	pAggregate,
+	canNotBeSameBeforeAdd,
+} = require('../../config/tools/postAction');
 const { articleEdit } = require('../../config/tools/articleApi');
 
 router.post('/list', limiter, checkToken, async (req, res, next) => {

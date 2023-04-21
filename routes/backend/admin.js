@@ -9,7 +9,7 @@ const {
 	encryptRes,
 } = require('../../config/tools/encryptNToken');
 const { limiter } = require('../../config/tools/rate-limiter');
-const { pList } = require('../../config/tools/postAction');
+const { pList, pEdit } = require('../../config/tools/postAction');
 
 // Log in
 router.post('/login', limiter, async (req, res, next) => {
@@ -91,14 +91,7 @@ router.post('/add', limiter, checkToken, async (req, res, next) => {
 router.post('/edit', limiter, checkToken, async (req, res, next) => {
 	const { token, tokenReq, _id, ...other } = decryptRes(req.body.data);
 	if (!_id && !other) next(10003);
-	else {
-		try {
-			await MongooseCRUD('Uo', 'admin', { _id }, other);
-			res.status(200).json({ error_code: 0, data: encryptRes({}) });
-		} catch (e) {
-			next(10003);
-		}
-	}
+	else pEdit(res, next, 'admin', other, _id);
 });
 
 module.exports = router;
