@@ -146,6 +146,7 @@
                 password: 'alex2223'
             }
             const obj = CryptoJS.AES.encrypt(JSON.stringify(data), 'C8763').toString()
+            console.log(obj)
             let de = CryptoJS.AES.decrypt(obj, "C8763")
             console.log(obj)
             axios
