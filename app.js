@@ -74,7 +74,7 @@ app.use(
   })
 );
 
-// catch 404 and forward to error handleryar
+// catch 404 and forward to error handler
 app.use(function (req, res, next) {
   res.status(404).json(
     encryptRes({
@@ -88,7 +88,7 @@ app.use(function (req, res, next) {
 app.use(function (err, req, res, next) {
   console.log("Error Code :", err);
   const error_code = Number.isInteger(err) ? err : 10003;
-  res.status(500).json({ error_code, data: {} });
+  res.status(200).json({ error_code, data: {} });
 });
 
 const debug = require("debug")("my-application");
