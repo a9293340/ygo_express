@@ -10,24 +10,27 @@ const checkToken = async (req, res, next) => {
     // 共通邏輯前台無需檢查token
     if (token === "frontend") next();
     else {
-      MongooseCRUD("R", "backend_token", { token }).then(async (arr, err) => {
-        if (err || arr.length > 1) next(err || 10004);
-        else if (!arr.length) next(10008);
-        else {
-          const checkDate =
-            new Date() - new Date(arr[0]["date"]) > 60 * 60 * 1000;
-          req.error_code = checkDate ? 10005 : 0;
-          if (!req.error_code) {
-            await MongooseCRUD(
-              "Uo",
-              "backend_token",
-              { tokenReq, token },
-              { date: new Date() }
-            );
-            next();
-          } else next(req.error_code);
-        }
-      });
+      if (typeof tokenReq !== "string" || typeof token !== "string")
+        next(10003);
+      else
+        MongooseCRUD("R", "backend_token", { token }).then(async (arr, err) => {
+          if (err || arr.length > 1) next(err || 10004);
+          else if (!arr.length) next(10008);
+          else {
+            const checkDate =
+              new Date() - new Date(arr[0]["date"]) > 60 * 60 * 1000;
+            req.error_code = checkDate ? 10005 : 0;
+            if (!req.error_code) {
+              await MongooseCRUD(
+                "Uo",
+                "backend_token",
+                { tokenReq, token },
+                { date: new Date() }
+              );
+              next();
+            } else next(req.error_code);
+          }
+        });
     }
   } catch (e) {
     req.error_code = 10003;
