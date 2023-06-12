@@ -20,6 +20,7 @@ const pList = (
 		: {};
 	MongooseCRUD('R', modelName, target, option, projection).then(
 		async (arr, err) => {
+			console.log(arr);
 			if (err) next(err);
 			else if (
 				hasPage &&
