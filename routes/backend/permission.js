@@ -17,11 +17,8 @@ router.post('/add', limiter, checkToken, async (req, res, next) => {
 });
 
 router.post('/list', limiter, checkToken, (req, res, next) => {
-	const { filter, limit, page } = decryptRes(req.body.data);
-	pList(res, next, 'permission', filter, false, {
-		limit,
-		page,
-	});
+	const { filter } = decryptRes(req.body.data);
+	pList(res, next, 'permission', filter, false, false);
 });
 
 router.post('/edit', limiter, checkToken, async (req, res, next) => {
