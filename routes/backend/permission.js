@@ -7,11 +7,25 @@ const {
 	pList,
 } = require('../../config/tools/postAction');
 const { makePermission } = require('../../config/tools/permission');
+const { MongooseCRUD } = require('../../config/MongoDb/Api');
 const router = express.Router();
 
 router.post('/add', limiter, checkToken, async (req, res, next) => {
 	const { token, tokenReq, ...useful } = decryptRes(req.body.data);
 	useful.permission = makePermission(useful.permission);
+	try {
+		const types = (
+			await MongooseCRUD(
+				'R',
+				'permission',
+				{},
+				{ sort: { type: -1 }, limit: 1 }
+			)
+		)[0]['type'];
+		useful.type = typeof types === 'number' ? types + 1 : undefined;
+	} catch (error) {
+		useful.type = undefined;
+	}
 	// console.log(useful.permission);
 	canNotBeSameBeforeAdd(res, next, 'permission', useful, 'type');
 });
