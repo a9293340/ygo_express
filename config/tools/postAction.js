@@ -22,6 +22,20 @@ const pList = (
 		async (arr, err) => {
 			// console.log(arr);
 			if (err) next(err);
+			if (!arr.length)
+				res.status(200).json({
+					error_code: 0,
+					data: encryptRes(
+						hasPage
+							? {
+									total: 0,
+									list: arr,
+							  }
+							: {
+									list: arr,
+							  }
+					),
+				});
 			else if (
 				hasPage &&
 				(!Number.isInteger(hasPage.limit) ||
@@ -87,8 +101,17 @@ const pEdit = async (res, next, modelName, use, _id) => {
 
 const pAggregate = async (res, modelName, target, hasPage) => {
 	MongooseCRUD('A', modelName, target, {}, {}).then(async (arr, err) => {
+		console.log(arr);
 		if (err) next(err);
-		else if (
+		else if (!arr.length) {
+			res.status(200).json({
+				error_code: 0,
+				data: encryptRes({
+					total: 0,
+					list: [],
+				}),
+			});
+		} else if (
 			hasPage &&
 			(!Number.isInteger(hasPage.limit) ||
 				!Number.isInteger(hasPage.page))
@@ -104,6 +127,8 @@ const pAggregate = async (res, modelName, target, hasPage) => {
 			lastFilter.push({
 				$count: 'count',
 			});
+
+			console.log(await MongooseCRUD('A', modelName, lastFilter));
 			const total = (await MongooseCRUD('A', modelName, lastFilter))[0]
 				.count;
 			res.status(200).json({
