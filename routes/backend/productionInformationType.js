@@ -12,7 +12,7 @@ router.post('/list', limiter, checkToken, async (req, res, next) => {
 			res.status(200).json({
 				error_code: 0,
 				data: encryptRes({
-					productionInformation_subType: arr.subType,
+					productionInformation_subType: arr.map((el) => el.subType),
 				}),
 			});
 	});
