@@ -5,35 +5,32 @@ const { toISODate } = require('./toDate');
 
 const articleList = (req, res, next, modelName) => {
 	const { token, filter, limit, page } = decryptRes(req.body.data);
-	let target =
-		token === 'frontend'
-			? filter
-			: {
-					publish_date: {
-						$gte: toISODate(filter.begin_date),
-						$lte: toISODate(filter.end_date),
-					},
-					status: filter.status,
-			  };
-	let projection =
-		token === 'frontend' && filter._id
-			? {}
-			: {
-					content: 0,
-			  };
+	const getBackendTarget = () => {
+		let tar = {};
+		if (filter.status) tar.status = filter.status;
+		if (filter.type) tar.type = filter.type;
+		if (filter.begin_date && filter.end_date) {
+			tar.publish_date = {
+				$gte: toISODate(filter.begin_date),
+				$lte: toISODate(filter.end_date),
+			};
+		}
+
+		return tar;
+	};
+	let target = token === 'frontend' ? filter : getBackendTarget();
+	// console.log(target);
+	// let projection =
+	// 	token === 'frontend' && filter._id
+	// 		? {}
+	// 		: {
+	// 				content: 0,
+	// 		  };
 	// console.log(projection);
-	pList(
-		res,
-		next,
-		modelName,
-		target,
-		true,
-		{
-			limit,
-			page,
-		},
-		projection
-	);
+	pList(res, next, modelName, target, true, {
+		limit,
+		page,
+	});
 };
 
 const articleCreate = (req, res, next, modelName) => {

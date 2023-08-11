@@ -18,6 +18,7 @@ const pList = (
 				skip: hasPage.page * hasPage.limit,
 		  }
 		: {};
+	// console.log(modelName, target, option);
 	MongooseCRUD('R', modelName, target, option, projection).then(
 		async (arr, err) => {
 			// console.log(arr);

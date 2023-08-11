@@ -12,11 +12,20 @@ const router = express.Router();
 
 router.post('/list', limiter, checkToken, async (req, res, next) => {
 	const { filter, limit, page } = decryptRes(req.body.data);
-	const tag = fuzzySearch(filter.tag);
-	pList(res, next, 'tag', { tag }, false, {
-		limit,
-		page,
-	});
+	const tag = filter.tag ? fuzzySearch(filter.tag) : undefined;
+	pList(
+		res,
+		next,
+		'tag',
+		tag ? { tag } : {},
+		false,
+		limit && page
+			? {
+					limit,
+					page,
+			  }
+			: false
+	);
 });
 
 router.post('/add', limiter, checkToken, async (req, res, next) => {
