@@ -12,7 +12,8 @@ const pList = (
 	hasPage = false,
 	projection = {}
 ) => {
-	const option = hasPage
+	const hasLimitPage = hasPage && hasPage.limit && hasPage.page;
+	const option = hasLimitPage
 		? {
 				limit: hasPage.limit,
 				skip: hasPage.page * hasPage.limit,
@@ -38,7 +39,7 @@ const pList = (
 					),
 				});
 			else if (
-				hasPage &&
+				hasLimitPage &&
 				(!Number.isInteger(hasPage.limit) ||
 					!Number.isInteger(hasPage.page))
 			) {
@@ -53,13 +54,13 @@ const pList = (
 						);
 					}
 				}
-				const count = hasPage
+				const count = hasLimitPage
 					? await MongooseCRUD('COUNT', modelName, target)
 					: 0;
 				res.status(200).json({
 					error_code: 0,
 					data: encryptRes(
-						hasPage
+						hasLimitPage
 							? {
 									total: count,
 									list: arr,
