@@ -7,8 +7,9 @@ const articleList = (req, res, next, modelName) => {
 	const { token, filter, limit, page } = decryptRes(req.body.data);
 	const getBackendTarget = () => {
 		let tar = {};
-		if (filter.status) tar.status = filter.status;
-		if (filter.type) tar.type = filter.type;
+		if (Number.isInteger(filter.status)) tar.status = filter.status;
+		if (Number.isInteger(filter.type)) tar.type = filter.type;
+		if (filter._id) tar._id = filter._id;
 		if (filter.begin_date && filter.end_date) {
 			tar.publish_date = {
 				$gte: toISODate(filter.begin_date),
@@ -19,6 +20,12 @@ const articleList = (req, res, next, modelName) => {
 		return tar;
 	};
 	let target = token === 'frontend' ? filter : getBackendTarget();
+	const projection =
+		limit !== 1
+			? {
+					content: 0,
+			  }
+			: {};
 	// console.log(target);
 	// let projection =
 	// 	token === 'frontend' && filter._id
@@ -27,10 +34,18 @@ const articleList = (req, res, next, modelName) => {
 	// 				content: 0,
 	// 		  };
 	// console.log(projection);
-	pList(res, next, modelName, target, true, {
-		limit,
-		page,
-	});
+	pList(
+		res,
+		next,
+		modelName,
+		target,
+		true,
+		{
+			limit,
+			page,
+		},
+		projection
+	);
 };
 
 const articleCreate = (req, res, next, modelName) => {
