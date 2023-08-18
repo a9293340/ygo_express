@@ -15,7 +15,7 @@ router.post('/list', limiter, checkToken, (req, res, next) => {
 		),
 		$lte: toISODate(dayjs(filter.date).endOf('month').format('YYYY-MM-DD')),
 	};
-	pList(res, next, 'calendar', target, true, false);
+	pList(res, next, 'calendar', { date: target }, true, false);
 });
 
 router.post('/add', limiter, checkToken, (req, res, next) => {

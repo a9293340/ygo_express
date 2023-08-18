@@ -19,7 +19,7 @@ router.post('/list', limiter, checkToken, async (req, res, next) => {
 		'tag',
 		tag ? { tag } : {},
 		false,
-		limit && page
+		Number.isInteger(limit) && Number.isInteger(page)
 			? {
 					limit,
 					page,
