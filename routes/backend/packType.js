@@ -1,34 +1,41 @@
-const express = require("express");
-const { limiter } = require("../../config/tools/rate-limiter");
-const { checkToken, decryptRes } = require("../../config/tools/encryptNToken");
+const express = require('express');
+const { limiter } = require('../../config/tools/rate-limiter');
 const {
-  canNotBeSameBeforeAdd,
-  pList,
-} = require("../../config/tools/postAction");
-const { articleEdit } = require("../../config/tools/articleApi");
+	checkToken,
+	decryptRes,
+	fuzzySearch,
+} = require('../../config/tools/encryptNToken');
+const {
+	canNotBeSameBeforeAdd,
+	pList,
+} = require('../../config/tools/postAction');
+const { articleEdit } = require('../../config/tools/articleApi');
 const router = express.Router();
 
-router.post("/add", limiter, checkToken, async (req, res, next) => {
-  const { token, tokenReq, ...useful } = decryptRes(req.body.data);
-  await canNotBeSameBeforeAdd(
-    res,
-    next,
-    "product_information_type",
-    useful,
-    "name"
-  );
+router.post('/add', limiter, checkToken, async (req, res, next) => {
+	const { token, tokenReq, ...useful } = decryptRes(req.body.data);
+	await canNotBeSameBeforeAdd(
+		res,
+		next,
+		'product_information_type',
+		useful,
+		'name'
+	);
 });
 
-router.post("/list", limiter, checkToken, (req, res, next) => {
-  const { filter, limit, page } = decryptRes(req.body.data);
-  pList(res, next, "product_information_type", filter, false, {
-    limit,
-    page,
-  });
+router.post('/list', limiter, checkToken, (req, res, next) => {
+	const { filter, limit, page } = decryptRes(req.body.data);
+	let packTypeFilter = {};
+	if (Number.isInteger(filter.status)) packTypeFilter.status = filter.status;
+	if (filter.packType) packTypeFilter.packType = fuzzySearch(filter.packType);
+	pList(res, next, 'product_information_type', packTypeFilter, false, {
+		limit,
+		page,
+	});
 });
 
-router.post("/edit", limiter, checkToken, async (req, res, next) => {
-  await articleEdit(req, res, next, "product_information_type");
+router.post('/edit', limiter, checkToken, async (req, res, next) => {
+	await articleEdit(req, res, next, 'product_information_type');
 });
 
 module.exports = router;
