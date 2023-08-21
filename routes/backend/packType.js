@@ -25,9 +25,10 @@ router.post('/add', limiter, checkToken, async (req, res, next) => {
 
 router.post('/list', limiter, checkToken, (req, res, next) => {
 	const { filter, limit, page } = decryptRes(req.body.data);
+	console.log(filter);
 	let packTypeFilter = {};
 	if (Number.isInteger(filter.status)) packTypeFilter.status = filter.status;
-	if (filter.packType) packTypeFilter.packType = fuzzySearch(filter.packType);
+	if (filter.name) packTypeFilter.name = fuzzySearch(filter.name);
 	pList(res, next, 'product_information_type', packTypeFilter, false, {
 		limit,
 		page,
