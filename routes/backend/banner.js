@@ -14,12 +14,15 @@ router.post('/add', limiter, checkToken, (req, res, next) => {
 
 router.post('/list', limiter, checkToken, (req, res, next) => {
 	const { filter, limit, page } = decryptRes(req.body.data);
-	const target = {
-		date: {
-			$gte: toISODate(filter.begin_date),
-			$lte: toISODate(filter.end_date),
-		},
-	};
+	const target =
+		filter.begin_date && filter.end_date
+			? {
+					date: {
+						$gte: toISODate(filter.begin_date),
+						$lte: toISODate(filter.end_date),
+					},
+			  }
+			: {};
 	pList(res, next, 'banner', target, true, {
 		limit,
 		page,
