@@ -8,22 +8,22 @@ const cors = require('cors');
 // const indexRouter = require("./routes/index");
 // const usersRouter = require("./routes/users");
 const {
-	adminRouter,
-	serialIntroductionRouter,
-	seriesStoryRouter,
-	usefulCardIntroductionRouter,
-	metaDeckRouter,
-	productInformationRouter,
-	productionInformationTypeRouter,
-	cardsRouter,
-	battlePaperRouter,
-	rulesRouter,
-	calendarRouter,
-	tagRouter,
-	bannerRouter,
-	packTypeRouter,
-	permissionRouter,
-	cardsImageRouter,
+  adminRouter,
+  serialIntroductionRouter,
+  seriesStoryRouter,
+  usefulCardIntroductionRouter,
+  metaDeckRouter,
+  productInformationRouter,
+  productionInformationTypeRouter,
+  cardsRouter,
+  battlePaperRouter,
+  rulesRouter,
+  calendarRouter,
+  tagRouter,
+  bannerRouter,
+  packTypeRouter,
+  permissionRouter,
+  cardsImageRouter,
 } = require('./routes/index');
 
 const http = require('http');
@@ -60,36 +60,36 @@ app.use('/api/permission', permissionRouter);
 app.use('/api/cardsImage', cardsImageRouter);
 
 app.get('/', (req, res) => {
-	res.sendfile('./views/index.html');
+  res.sendfile('./views/index.html');
 });
 app.get('/s', (req, res) => {
-	res.sendfile('./views/sss.html');
+  res.sendfile('./views/sss.html');
 });
 
 app.use(
-	cors({
-		origin: '*',
-		methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-		preflightContinue: false,
-		optionsSuccessStatus: 204,
-	})
+  cors({
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+  }),
 );
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-	res.status(404).json(
-		encryptRes({
-			error_code: 10001,
-			data: {},
-		})
-	);
+  res.status(404).json(
+    encryptRes({
+      error_code: 10001,
+      data: {},
+    }),
+  );
 });
 
 // error handler
 app.use(function (err, req, res, next) {
-	console.log('Error Code :', err);
-	const error_code = Number.isInteger(err) ? err : 10003;
-	res.status(200).json({ error_code, data: {} });
+  console.log('Error Code :', err);
+  const error_code = Number.isInteger(err) ? err : 10003;
+  res.status(200).json({ error_code, data: {} });
 });
 
 const debug = require('debug')('my-application');
@@ -99,5 +99,5 @@ app.set('port', process.env.PORT || 3300);
 const server = http.createServer(app);
 
 server.listen(app.get('port'), function () {
-	debug('Express server listening on port ' + server.address().port);
+  debug('Express server listening on port ' + server.address().port);
 });
