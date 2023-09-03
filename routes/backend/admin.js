@@ -57,7 +57,7 @@ router.post('/logout', limiter, checkToken, async (req, res, next) => {
 router.post('/list', limiter, checkToken, (req, res, next) => {
 	console.log(decryptRes(req.body.data));
 	const { filter, limit, page } = decryptRes(req.body.data);
-	pList(res, next, 'admin', filter, false, { limit, page });
+	pList(res, next, 'admin', filter, true, { limit, page });
 });
 
 // Add
