@@ -59,10 +59,10 @@ app.use('/api/packType', packTypeRouter);
 app.use('/api/permission', permissionRouter);
 app.use('/api/cardsImage', cardsImageRouter);
 
-app.get('/', (req, res) => {
+app.get('/api/', (req, res) => {
   res.sendfile('./views/index.html');
 });
-app.get('/s', (req, res) => {
+app.get('/api/s', (req, res) => {
   res.sendfile('./views/sss.html');
 });
 

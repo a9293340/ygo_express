@@ -1,0 +1,12 @@
+{
+  "articleList": [
+    "/metaDeck",
+    "/seriesIntroduction",
+    "/usefulCardIntroduction",
+    "/productInformation",
+    "/rules",
+    "/seriesStory"
+  ],
+  "list": ["/calendar", "/banner", "/cards", "/cardsImage", "/packType"],
+  "all": ["/search", "/reptile"]
+}
