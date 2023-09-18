@@ -1,15 +1,22 @@
 const { MongooseCRUD } = require('../MongoDb/Api');
 const { v4 } = require('uuid');
 const CryptoJS = require('crypto-js');
+const frontend = require('../db/frontend.json');
+
+const checkFrontEndPath = req => {
+  const check = frontend[req.path.replace('/', '')];
+  return check ? !!check.find(el => req.baseUrl.indexOf(el) !== -1) : false;
+};
 
 const checkToken = async (req, res, next) => {
   console.log('CheckToken!');
   try {
     // console.log(req.body);
     const { tokenReq, token } = decryptRes(req.body.data);
-    // console.log(tokenReq, token);
-    // 共通邏輯前台無需檢查token
-    if (token === 'frontend') next();
+    // 部分邏輯前台無需檢查token
+    if (token === 'frontend' && checkFrontEndPath(req)) next();
+    // 非合格路徑則回傳無權限
+    else if (token === 'frontend') next(10008);
     else {
       if (typeof tokenReq !== 'string' || typeof token !== 'string') next(10003);
       else
