@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const admin = new mongoose.Schema({
 	type: { type: Number },
@@ -128,6 +128,7 @@ const decks = new mongoose.Schema({
 	author_name: { type: String },
 	title: { type: String },
 	create_date: { type: Date },
+	last_edit_date: { type: Date },
 	main_deck: { type: Array },
 	extra_deck: { type: Array },
 	side_deck: { type: Array },
