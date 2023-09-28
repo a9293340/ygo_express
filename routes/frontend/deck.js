@@ -6,25 +6,36 @@ const {
 	checkToken,
 	decryptRes,
 	encryptRes,
+	fuzzySearch,
 } = require("../../config/tools/encryptNToken");
 const { limiter } = require("../../config/tools/rate-limiter");
 const { pList, pAdd } = require("../../config/tools/postAction");
 const { articleEdit } = require("../../config/tools/articleApi");
+const { toISODate } = require("../../config/tools/toDate");
 
 router.post("/deckList", limiter, checkToken, async (req, res, next) => {
 	const { page, limit, filter } = decryptRes(req.body.data);
 	try {
-		if (limit > 1)
+		if (limit > 1) {
+			let target = {};
+			const { title, begin_date, end_date, ...other } = filter;
+			if (title) target.title = fuzzySearch(title);
+			if (begin_date && end_date)
+				target.last_edit_date = {
+					$gte: toISODate(begin_date),
+					$lte: toISODate(end_date),
+				};
+			if (other) target = { ...target, ...other };
 			pList(
 				res,
 				next,
 				"decks",
-				filter,
+				target,
 				true,
 				{ limit, page },
 				{ main_deck: 0, extra_deck: 0, side_deck: 0 }
 			);
-		else {
+		} else {
 			let deck = await MongooseCRUD("R", "decks", filter, { limit, page });
 
 			const getCardsInfo = async (deck, standard) =>

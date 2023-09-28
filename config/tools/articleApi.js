@@ -1,5 +1,5 @@
 // const { MongooseCRUD } = require('../../config/MongoDb/Api');
-const { decryptRes } = require("./encryptNToken");
+const { decryptRes, fuzzySearch } = require("./encryptNToken");
 const { pList, pAdd, pEdit } = require("./postAction");
 const { toISODate } = require("./toDate");
 
@@ -9,6 +9,8 @@ const articleList = (req, res, next, modelName) => {
 		let tar = {};
 		if (Number.isInteger(filter.status)) tar.status = filter.status;
 		if (Number.isInteger(filter.type)) tar.type = filter.type;
+		if (filter.title) tar.title = fuzzySearch(filter.title);
+		if (filter.content) tar.content = fuzzySearch(filter.content);
 		if (filter._id) tar._id = filter._id;
 		if (filter.begin_date && filter.end_date) {
 			tar.publish_date = {

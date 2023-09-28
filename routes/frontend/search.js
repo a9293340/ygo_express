@@ -1,12 +1,16 @@
 const express = require("express");
 const router = express.Router();
 
-const { checkToken, decryptRes } = require("../../config/tools/encryptNToken");
+const {
+	checkToken,
+	decryptRes,
+	fuzzySearch,
+} = require("../../config/tools/encryptNToken");
 const { limiter } = require("../../config/tools/rate-limiter");
 const { pList } = require("../../config/tools/postAction");
 
 router.post("/search", limiter, checkToken, async (req, res, next) => {
-	const { content, article_type, article_subtype, limit, page } = decryptRes(
+	const { title, article_type, article_subtype, limit, page } = decryptRes(
 		req.body.data
 	);
 	let article_db = "";
@@ -28,7 +32,7 @@ router.post("/search", limiter, checkToken, async (req, res, next) => {
 			break;
 	}
 	let filter = {
-		content,
+		title: fuzzySearch(title),
 	};
 	if (article_subtype) filter.type = article_subtype;
 	pList(res, next, article_db, filter, true, { limit, page });
