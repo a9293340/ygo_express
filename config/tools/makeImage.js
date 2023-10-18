@@ -4,6 +4,7 @@ const fs = require("fs");
 const makeImage = (photo, path, needToken = "make") => {
 	const token = needToken === "make" ? v4() : needToken;
 	const idx = photo.indexOf(";base64,") + 8;
+	if (!fs.readdirSync(`./public/${path}`)) fs.mkdirSync(`./public/${path}`);
 	fs.writeFileSync(
 		`./public/${path}/${token}.webp`,
 		photo.substring(idx),
