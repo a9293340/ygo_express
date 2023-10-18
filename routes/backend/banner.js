@@ -11,8 +11,8 @@ router.post("/add", limiter, checkToken, (req, res, next) => {
 	let { token, tokenReq, ...use } = decryptRes(req.body.data);
 	// console.log(use);
 	use.date = new Date();
-	if (use.photo_pc) use.photo = makeImage(photo_pc, "article");
-	if (use.photo_mobile) use.photo = makeImage(photo_mobile, "article");
+	if (use.photo_pc) use.photo = makeImage(photo_pc, "banner");
+	if (use.photo_mobile) use.photo = makeImage(photo_mobile, "banner");
 	pAdd(res, next, "banner", use);
 });
 
@@ -36,8 +36,8 @@ router.post("/list", limiter, checkToken, (req, res, next) => {
 router.post("/edit", limiter, checkToken, (req, res, next) => {
 	let { token, tokenReq, _id, ...use } = decryptRes(req.body.data);
 	use.date = new Date();
-	if (use.photo_pc) use.photo = makeImage(photo_pc, "article");
-	if (use.photo_mobile) use.photo = makeImage(photo_mobile, "article");
+	if (use.photo_pc) use.photo = makeImage(photo_pc, "banner");
+	if (use.photo_mobile) use.photo = makeImage(photo_mobile, "banner");
 	if (!_id) next(10004);
 	else {
 		try {
