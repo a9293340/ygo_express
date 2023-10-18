@@ -50,8 +50,7 @@ const articleCreate = (req, res, next, modelName) => {
 	use.publish_date = toISODate(use.publish_date);
 	use.status = 1;
 	use.to_top = false;
-	const photo = use.photo;
-	if (photo) use.photo = makeImage(photo, "article");
+	if (use.photo) use.photo = makeImage(photo, "article");
 
 	pAdd(res, next, modelName, use);
 };
@@ -72,8 +71,7 @@ const articleEdit = async (req, res, next, modelName) => {
 			} catch (error) {
 				console.log("Remove file error!");
 			}
-			const photo = use.photo;
-			if (photo) use.photo = makeImage(photo, "article");
+			if (use.photo) use.photo = makeImage(photo, "article");
 			pEdit(res, next, modelName, use, _id);
 		} catch (e) {
 			next(10003);
