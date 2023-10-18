@@ -2,6 +2,9 @@
 const { decryptRes, fuzzySearch } = require("./encryptNToken");
 const { pList, pAdd, pEdit } = require("./postAction");
 const { toISODate } = require("./toDate");
+const { makeImage } = require("./makeImage");
+const { MongooseCRUD } = require("../MongoDb/Api");
+const fs = require("fs");
 
 const articleList = (req, res, next, modelName) => {
 	const { token, filter, limit, page } = decryptRes(req.body.data);
@@ -43,18 +46,34 @@ const articleList = (req, res, next, modelName) => {
 };
 
 const articleCreate = (req, res, next, modelName) => {
-	const { token, tokenReq, ...use } = decryptRes(req.body.data);
+	let { token, tokenReq, ...use } = decryptRes(req.body.data);
 	use.publish_date = toISODate(use.publish_date);
 	use.status = 1;
 	use.to_top = false;
+	const photo = use.photo;
+	if (photo) use.photo = makeImage(photo, "article");
+
 	pAdd(res, next, modelName, use);
 };
 
 const articleEdit = async (req, res, next, modelName) => {
-	const { token, tokenReq, _id, ...use } = decryptRes(req.body.data);
+	let { token, tokenReq, _id, ...use } = decryptRes(req.body.data);
 	if (!_id) next(10004);
 	else {
 		try {
+			use.publish_date = toISODate(use.publish_date);
+			try {
+				const lastDatabase = (
+					await MongooseCRUD("R", modelName, { _id: use._id })
+				)[0];
+				if (lastDatabase && lastDatabase.photo) {
+					fs.unlinkSync(`./public/image/article/${lastDatabase.photo}.webp`);
+				}
+			} catch (error) {
+				console.log("Remove file error!");
+			}
+			const photo = use.photo;
+			if (photo) use.photo = makeImage(photo, "article");
 			pEdit(res, next, modelName, use, _id);
 		} catch (e) {
 			next(10003);
