@@ -1,12 +1,19 @@
 {
-  "articleList": [
-    "/metaDeck",
-    "/seriesIntroduction",
-    "/usefulCardIntroduction",
-    "/productInformation",
-    "/rules",
-    "/seriesStory"
-  ],
-  "list": ["/calendar", "/banner", "/cards", "/cardsImage", "/packType"],
-  "all": ["/search", "/reptile"]
+	"articleList": [
+		"/metaDeck",
+		"/seriesIntroduction",
+		"/usefulCardIntroduction",
+		"/productInformation",
+		"/rules",
+		"/seriesStory"
+	],
+	"list": [
+		"/calendar",
+		"/banner",
+		"/cards",
+		"/cardsImage",
+		"/packType",
+		"/search"
+	],
+	"all": ["/search", "/reptile"]
 }

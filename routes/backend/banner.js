@@ -3,7 +3,7 @@ const { limiter } = require("../../config/tools/rate-limiter");
 const { checkToken, decryptRes } = require("../../config/tools/encryptNToken");
 const { toISODate } = require("../../config/tools/toDate");
 const { pAdd, pList, pEdit } = require("../../config/tools/postAction");
-const { makeImage } = require("./makeImage");
+const { makeImage } = require("../../config/tools/makeImage");
 
 const router = express.Router();
 
@@ -18,19 +18,31 @@ router.post("/add", limiter, checkToken, (req, res, next) => {
 
 router.post("/list", limiter, checkToken, (req, res, next) => {
 	const { filter, limit, page } = decryptRes(req.body.data);
-	const target =
-		filter.begin_date && filter.end_date
+	let target = {};
+	if (filter) {
+		target =
+			filter.begin_date && filter.end_date
+				? {
+						date: {
+							$gte: toISODate(filter.begin_date),
+							$lte: toISODate(filter.end_date),
+						},
+				  }
+				: {};
+	}
+	pList(
+		res,
+		next,
+		"banner",
+		target,
+		filter ? true : false,
+		limit
 			? {
-					date: {
-						$gte: toISODate(filter.begin_date),
-						$lte: toISODate(filter.end_date),
-					},
+					limit,
+					page,
 			  }
-			: {};
-	pList(res, next, "banner", target, true, {
-		limit,
-		page,
-	});
+			: false
+	);
 });
 
 router.post("/edit", limiter, checkToken, (req, res, next) => {

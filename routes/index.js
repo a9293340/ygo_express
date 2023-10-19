@@ -15,21 +15,28 @@ const packTypeRouter = require("./backend/packType");
 const permissionRouter = require("./backend/permission");
 const cardsImageRouter = require("./backend/cardsImage");
 
+const deckRouter = require("./frontend/deck");
+const memberRouter = require("./frontend/member");
+const searchRouter = require("./frontend/search");
+
 module.exports = {
-  adminRouter,
-  serialIntroductionRouter,
-  usefulCardIntroductionRouter,
-  metaDeckRouter,
-  productInformationRouter,
-  rulesRouter,
-  seriesStoryRouter,
-  battlePaperRouter,
-  cardsRouter,
-  productionInformationTypeRouter,
-  calendarRouter,
-  tagRouter,
-  bannerRouter,
-  packTypeRouter,
-  permissionRouter,
-  cardsImageRouter,
+	adminRouter,
+	serialIntroductionRouter,
+	usefulCardIntroductionRouter,
+	metaDeckRouter,
+	productInformationRouter,
+	rulesRouter,
+	seriesStoryRouter,
+	battlePaperRouter,
+	cardsRouter,
+	productionInformationTypeRouter,
+	calendarRouter,
+	tagRouter,
+	bannerRouter,
+	packTypeRouter,
+	permissionRouter,
+	cardsImageRouter,
+	deckRouter,
+	memberRouter,
+	searchRouter,
 };

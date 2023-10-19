@@ -9,7 +9,7 @@ const {
 const { limiter } = require("../../config/tools/rate-limiter");
 const { pList } = require("../../config/tools/postAction");
 
-router.post("/search", limiter, checkToken, async (req, res, next) => {
+router.post("/list", limiter, checkToken, async (req, res, next) => {
 	const { title, article_type, article_subtype, limit, page } = decryptRes(
 		req.body.data
 	);
@@ -31,9 +31,9 @@ router.post("/search", limiter, checkToken, async (req, res, next) => {
 			article_db = "series_story";
 			break;
 	}
-	let filter = {
-		title: fuzzySearch(title),
-	};
+	console.log(1, article_db);
+	let filter = {};
+	if (title) filter.title = fuzzySearch(title);
 	if (article_subtype) filter.type = article_subtype;
 	pList(res, next, article_db, filter, true, { limit, page });
 });

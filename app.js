@@ -24,6 +24,9 @@ const {
 	packTypeRouter,
 	permissionRouter,
 	cardsImageRouter,
+	deckRouter,
+	memberRouter,
+	searchRouter,
 } = require("./routes/index");
 
 const http = require("http");
@@ -58,6 +61,9 @@ app.use("/api/banner", bannerRouter);
 app.use("/api/packType", packTypeRouter);
 app.use("/api/permission", permissionRouter);
 app.use("/api/cardsImage", cardsImageRouter);
+app.use("/api/deck", deckRouter);
+app.use("/api/member", memberRouter);
+app.use("/api/search", searchRouter);
 
 app.get("/api/", (req, res) => {
 	res.sendfile("./views/index.html");
