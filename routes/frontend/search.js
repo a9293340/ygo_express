@@ -10,9 +10,7 @@ const { limiter } = require("../../config/tools/rate-limiter");
 const { pList } = require("../../config/tools/postAction");
 
 router.post("/list", limiter, checkToken, async (req, res, next) => {
-	const { title, article_type, article_subtype, limit, page } = decryptRes(
-		req.body.data
-	);
+	const { title, article_type, article_subtype } = decryptRes(req.body.data);
 	let article_db = "";
 	switch (article_type) {
 		case 0:
@@ -35,7 +33,7 @@ router.post("/list", limiter, checkToken, async (req, res, next) => {
 	let filter = {};
 	if (title) filter.title = fuzzySearch(title);
 	if (article_subtype) filter.type = article_subtype;
-	pList(res, next, article_db, filter, true, { limit, page });
+	pList(res, next, article_db, filter);
 });
 
 module.exports = router;
