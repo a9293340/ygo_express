@@ -62,9 +62,9 @@ const articleEdit = async (req, res, next, modelName) => {
     try {
       use.publish_date = toISODate(use.publish_date);
       try {
-        const lastDatabase = (await MongooseCRUD('R', modelName, { _id: use._id }))[0];
+        const lastDatabase = (await MongooseCRUD('R', modelName, { _id }))[0];
         if (lastDatabase && lastDatabase.photo) {
-          fs.unlinkSync(`./public/image/article/${lastDatabase.photo}.webp`);
+          fs.unlinkSync(`./public/image/article/${lastDatabase.photo}`);
         }
       } catch (error) {
         console.log('Remove file error!');
