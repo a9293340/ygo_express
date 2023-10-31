@@ -50,7 +50,7 @@ const articleCreate = (req, res, next, modelName) => {
   use.publish_date = toISODate(use.publish_date);
   use.status = 1;
   use.to_top = false;
-  if (use.photo) use.photo = makeImage(photo, 'article');
+  if (use.photo) use.photo = makeImage(use.photo, 'article');
 
   pAdd(res, next, modelName, use);
 };
@@ -63,13 +63,17 @@ const articleEdit = async (req, res, next, modelName) => {
       use.publish_date = toISODate(use.publish_date);
       try {
         const lastDatabase = (await MongooseCRUD('R', modelName, { _id }))[0];
-        if (lastDatabase && lastDatabase.photo) {
+        if (
+          lastDatabase &&
+          lastDatabase.photo &&
+          fs.readdirSync('./public/image/').find(x => x === 'article')
+        ) {
           fs.unlinkSync(`./public/image/article/${lastDatabase.photo}`);
         }
       } catch (error) {
         console.log('Remove file error!');
       }
-      if (use.photo) use.photo = makeImage(photo, 'article');
+      if (use.photo) use.photo = makeImage(use.photo, 'article');
       pEdit(res, next, modelName, use, _id);
     } catch (e) {
       next(10003);

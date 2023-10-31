@@ -13,8 +13,8 @@ router.post('/add', limiter, checkToken, (req, res, next) => {
   let { token, tokenReq, ...use } = decryptRes(req.body.data);
   // console.log(use);
   use.date = new Date();
-  if (use.photo_pc) use.photo_pc = makeImage(photo_pc, 'banner');
-  if (use.photo_mobile) use.photo_mobile = makeImage(photo_mobile, 'banner');
+  if (use.photo_pc) use.photo_pc = makeImage(use.photo_pc, 'banner');
+  if (use.photo_mobile) use.photo_mobile = makeImage(use.photo_mobile, 'banner');
   pAdd(res, next, 'banner', use);
 });
 
