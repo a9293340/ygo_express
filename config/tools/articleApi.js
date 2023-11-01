@@ -66,7 +66,8 @@ const articleEdit = async (req, res, next, modelName) => {
         if (
           lastDatabase &&
           lastDatabase.photo &&
-          fs.readdirSync('./public/image/').find(x => x === 'article')
+          fs.readdirSync('./public/image/').find(x => x === 'article') &&
+          use.photo
         ) {
           fs.unlinkSync(`./public/image/article/${lastDatabase.photo}`);
         }

@@ -53,9 +53,10 @@ router.post('/edit', limiter, checkToken, async (req, res, next) => {
 
   try {
     const oldData = await MongooseCRUD('list', 'banner', { _id })[0];
-    if (oldData && oldData.photo_mobile)
+    if (oldData && oldData.photo_mobile && use.photo_mobile)
       fs.unlinkSync(`/public/image/banner/${oldData.photo_mobile}`);
-    if (oldData && oldData.photo_pc) fs.unlinkSync(`/public/image/banner/${oldData.photo_pc}`);
+    if (oldData && oldData.photo_pc && use.photo_pc)
+      fs.unlinkSync(`/public/image/banner/${oldData.photo_pc}`);
   } catch (error) {
     console.log('No Image');
   }
