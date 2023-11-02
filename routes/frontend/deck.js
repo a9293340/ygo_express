@@ -21,7 +21,7 @@ router.post("/deckList", limiter, checkToken, async (req, res, next) => {
 			const { title, begin_date, end_date, ...other } = filter;
 			if (title) target.title = fuzzySearch(title);
 			if (begin_date && end_date)
-				target.last_edit_date = {
+				target.create_date = {
 					$gte: toISODate(begin_date),
 					$lte: toISODate(end_date),
 				};

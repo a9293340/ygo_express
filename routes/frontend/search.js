@@ -30,8 +30,13 @@ router.post("/list", limiter, checkToken, async (req, res, next) => {
 		case 4:
 			article_db = "series_story";
 			break;
+		case 5:
+			article_db = "battle_paper";
+			break;
+		case 6:
+			article_db = "product_information";
+			break;
 	}
-	console.log(1, article_db);
 	let filter = {};
 	if (title) filter.title = fuzzySearch(title);
 	if (article_subtype) filter.type = article_subtype;
