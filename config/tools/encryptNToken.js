@@ -12,7 +12,7 @@ const checkToken = async (req, res, next) => {
 	console.log("CheckToken!");
 	try {
 		const { tokenReq, token } = decryptRes(req.body.data);
-		// console.log("!!!", tokenReq, token);
+		console.log("!!!", tokenReq, token, checkFrontEndPath(req));
 		// 部分邏輯前台無需檢查token
 		if (token === "frontend" && checkFrontEndPath(req)) next();
 		// 非合格路徑則回傳無權限
