@@ -14,7 +14,9 @@
 		"/cards",
 		"/cardsImage",
 		"/packType",
-		"/search"
+		"/search",
+		"/deck"
 	],
-	"all": ["/search", "/reptile"]
+	"add": ["/deck"],
+	"edit": ["/deck"]
 }
