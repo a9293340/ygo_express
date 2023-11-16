@@ -14,9 +14,9 @@
 		"/cards",
 		"/cardsImage",
 		"/packType",
-		"/search",
-		"/deck"
+		"/search"
 	],
+	"deckList": ["/deck"],
 	"add": ["/deck"],
 	"edit": ["/deck"]
 }
