@@ -5,6 +5,7 @@ const frontend = require("../db/frontend.json");
 
 const checkFrontEndPath = (req) => {
 	const check = frontend[req.path.replace("/", "")];
+	console.log(check, req.baseUrl);
 	return check ? !!check.find((el) => req.baseUrl.indexOf(el) !== -1) : false;
 };
 

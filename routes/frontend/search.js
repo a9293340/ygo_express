@@ -8,11 +8,29 @@ const {
 } = require("../../config/tools/encryptNToken");
 const { limiter } = require("../../config/tools/rate-limiter");
 const { pList } = require("../../config/tools/postAction");
+const { MongooseCRUD } = require("../../config/MongoDb/Api");
+
+const checkTagSearch = async (title) => {
+	try {
+		const tag = await MongooseCRUD("R", "tag", {});
+		let arr = [];
+		for (let i = 0; i < tag.length; i++) {
+			const ta = tag[i].tag;
+			if (title.indexOf(ta) !== -1) arr.push(ta);
+			else if (ta.indexOf(title) !== -1) arr.push(ta);
+		}
+		arr = [...new Set(arr)];
+		return arr;
+	} catch (error) {
+		return [];
+	}
+};
 
 router.post("/list", limiter, checkToken, async (req, res, next) => {
 	const { title, article_type, article_subtype, page, limit } = decryptRes(
 		req.body.data
 	);
+	let tags = [];
 	let article_db = "";
 	switch (article_type) {
 		case 0:
@@ -38,8 +56,26 @@ router.post("/list", limiter, checkToken, async (req, res, next) => {
 			break;
 	}
 	let filter = {};
-	if (title) filter.title = fuzzySearch(title);
+	if (title) {
+		tags = await checkTagSearch(title);
+		if (!tags.length) filter.title = fuzzySearch(title);
+		else {
+			filter["$or"] = [
+				{
+					title: fuzzySearch(title),
+				},
+				{
+					tag: {
+						$elemMatch: {
+							tag: { $in: tags },
+						},
+					},
+				},
+			];
+		}
+	}
 	if (article_subtype) filter.type = article_subtype;
+	// console.log(filter);
 	pList(res, next, article_db, filter, false, {
 		limit,
 		page,

@@ -31,7 +31,7 @@ router.post("/deckList", limiter, checkToken, async (req, res, next) => {
 				next,
 				"decks",
 				target,
-				true,
+				begin_date && end_date,
 				{ limit, page },
 				{ main_deck: 0, extra_deck: 0, side_deck: 0 }
 			);
@@ -68,6 +68,7 @@ router.post("/deckList", limiter, checkToken, async (req, res, next) => {
 			});
 		}
 	} catch (error) {
+		console.log(error);
 		next(10003);
 	}
 });

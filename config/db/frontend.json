@@ -16,5 +16,7 @@
 		"/packType",
 		"/search"
 	],
-	"all": ["/search", "/reptile"]
+	"deckList": ["/deck"],
+	"add": ["/deck"],
+	"edit": ["/deck"]
 }
