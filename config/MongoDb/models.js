@@ -123,7 +123,7 @@ const cards_image = new mongoose.Schema({
   photo: { type: String },
 });
 
-const deck = new mongoose.Schema({
+const decks = new mongoose.Schema({
   admin_id: { type: String },
   title: { type: String },
   create_date: { type: Date },
@@ -190,7 +190,7 @@ module.exports = {
   series_story,
   battle_paper,
   cards,
-  deck,
+  decks,
   calendar,
   banner,
   product_information_type,
