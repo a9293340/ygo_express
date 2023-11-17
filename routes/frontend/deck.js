@@ -51,6 +51,7 @@ router.post("/deckList", limiter, checkToken, async (req, res, next) => {
 							},
 							number: 1,
 							id: 1,
+							name: 1,
 						},
 					},
 				]);
@@ -62,6 +63,7 @@ router.post("/deckList", limiter, checkToken, async (req, res, next) => {
 						card_number: final.number,
 						card_num_id: final.id,
 						card_price: final.price_info,
+						card_name: final.name,
 					};
 				});
 			};
