@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
+const mongoose = require("mongoose");
 
+const ObjectId = mongoose.Types.ObjectId;
 const { MongooseCRUD } = require("../../config/MongoDb/Api");
 const {
 	checkToken,
@@ -38,15 +40,20 @@ router.post("/deckList", limiter, checkToken, async (req, res, next) => {
 			);
 		} else {
 			let deck = (await MongooseCRUD("R", "decks", filter, { limit, page }))[0];
-			console.log(deck);
 			const getCardsInfo = async (_id, deck) => {
-				const info = await MongooseCRUD(
-					"R",
-					"cards",
-					{ _id },
-					{},
-					{ price_info: 0 }
-				);
+				const info = await MongooseCRUD("A", "cards", [
+					{ $match: { _id: { $in: _id.map((el) => new ObjectId(el)) } } },
+					{
+						$project: {
+							_id: 1,
+							price_info: {
+								$lastN: { n: { $size: "$rarity" }, input: "$price_info" },
+							},
+							number: 1,
+							id: 1,
+						},
+					},
+				]);
 				return deck.map((item) => {
 					let final = info.find((x) => x._id.toString() === item.card_id);
 					return {
@@ -54,6 +61,7 @@ router.post("/deckList", limiter, checkToken, async (req, res, next) => {
 						card_rarity: item.card_rarity,
 						card_number: final.number,
 						card_num_id: final.id,
+						card_price: final.price_info,
 					};
 				});
 			};
