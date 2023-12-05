@@ -4,6 +4,7 @@ const { pList, pAdd, pEdit } = require('./postAction');
 const { toISODate } = require('./toDate');
 const { makeImage } = require('./makeImage');
 const { MongooseCRUD } = require('../MongoDb/Api');
+const { useCutBase64FromContent } = require('./useCutBase64FromContent');
 const fs = require('fs');
 
 const articleList = (req, res, next, modelName) => {
@@ -47,11 +48,13 @@ const articleList = (req, res, next, modelName) => {
 
 const articleCreate = (req, res, next, modelName) => {
   let { token, tokenReq, ...use } = decryptRes(req.body.data);
+  if (use.content) {
+    useCutBase64FromContent(use.content, use.admin_id);
+  }
   use.publish_date = toISODate(use.publish_date);
   use.status = 1;
   use.to_top = false;
   if (use.photo) use.photo = makeImage(use.photo, 'article');
-
   pAdd(res, next, modelName, use);
 };
 
@@ -75,6 +78,9 @@ const articleEdit = async (req, res, next, modelName) => {
         console.log('Remove file error!');
       }
       if (use.photo) use.photo = makeImage(use.photo, 'article');
+      if (use.content) {
+        use.content = useCutBase64FromContent(use.content, use.admin_id);
+      }
       pEdit(res, next, modelName, use, _id);
     } catch (e) {
       next(10003);
