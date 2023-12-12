@@ -37,4 +37,4 @@ jobs:
         # root@hostname 請替換成相應的帳號及主機位置(ip 或網址)
 
       - name: Restart PM2 # 第八步，重啟 PM2
-        run: ssh root@${{ secrets.hostname }} 'cd ~/website-sample/ && pm2 restart' # 透過 SSH 連到虛擬主機，然後進到應用程式的目錄，並重啟所有 PM2 管理的應用程式
+        run: ssh root@${{ secrets.hostname }} 'cd ~/ygo_express/ && pm2 restart' # 透過 SSH 連到虛擬主機，然後進到應用程式的目錄，並重啟所有 PM2 管理的應用程式
