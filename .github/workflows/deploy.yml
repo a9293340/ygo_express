@@ -21,6 +21,13 @@ jobs:
         run: |
           npm install
 
+      - name: Create .env file
+        run: |
+          echo ADMIN=${{ secrets.ADMIN }} >> .env
+          echo PASSWORD=${{ secrets.PASSWORD }} >> .env
+          echo DOMAIN=${{ secrets.DOMAIN }} >> .env
+          echo DB=ygo >> .env
+
       - name: Install SSH key # 第二步，安裝 SSH 密鑰
         uses: webfactory/ssh-agent@v0.5.3 # 使用第三方的 ssh-agent 動作
         with:
