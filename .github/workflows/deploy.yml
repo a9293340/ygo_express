@@ -40,8 +40,8 @@ jobs:
         # 請將 'hostname' 替換為你的服務器地址，例如 IP 地址或域名
 
       - name: Transfer files # 第六步，傳輸文件
-        run: rsync -avz --delete ./ root@${{ secrets.hostname }}:~/ygo_express/ # 使用 rsync 命令將文件傳輸到虛擬主機
-        # root@hostname 請替換成相應的帳號及主機位置(ip 或網址)
+        run: rsync -avz --delete --exclude='public' ./ root@${{ secrets.hostname }}:~/ygo_express/ # 使用 rsync 命令將文件傳輸到虛擬主機
+        # root@hostname 請替換成相應的帳號及主機位置(ip 或網址) --exclude防止刪除特定檔案
 
       - name: Restart PM2 # 第八步，重啟 PM2
         run: ssh root@${{ secrets.hostname }} 'cd ~/ygo_express/ && pm2 restart card-time-server' # 透過 SSH 連到虛擬主機，然後進到應用程式的目錄，並重啟所有 PM2 管理的應用程式
