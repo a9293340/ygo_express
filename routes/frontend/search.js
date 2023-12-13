@@ -74,7 +74,7 @@ router.post("/list", limiter, checkToken, async (req, res, next) => {
 			];
 		}
 	}
-	if (article_subtype) filter.type = article_subtype;
+	if (Number.isInteger(article_subtype)) filter.type = article_subtype;
 	// console.log(filter);
 	pList(res, next, article_db, filter, false, {
 		limit,
