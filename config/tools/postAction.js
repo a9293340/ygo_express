@@ -3,6 +3,7 @@ const { encryptRes } = require("./encryptNToken");
 const { makeAuthorName } = require("./makeAutorName");
 const { parsingPermission2Obj, makePermission } = require("./permission");
 const { makeArticleDateArr } = require("./toDate");
+const mongoose = require("mongoose");
 
 const pList = (
 	res,
@@ -13,6 +14,13 @@ const pList = (
 	hasPage = false,
 	projection = {}
 ) => {
+	console.log(mongoose.Types.ObjectId.isValid(target._id));
+	if (target._id) {
+		if (!mongoose.Types.ObjectId.isValid(target._id)) {
+			next(10004);
+			return;
+		}
+	}
 	const hasLimitPage =
 		hasPage &&
 		Number.isInteger(hasPage.limit) &&
@@ -41,7 +49,7 @@ const pList = (
 	try {
 		MongooseCRUD("R", modelName, target, option, projection).then(
 			async (arr, err) => {
-				// console.log(arr);
+				// console.log(arr, err);
 				if (err) next(err);
 				if (!arr.length)
 					res.status(200).json({
