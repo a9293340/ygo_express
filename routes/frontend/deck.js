@@ -57,14 +57,17 @@ router.post('/deckList', limiter, checkToken, async (req, res, next) => {
         ]);
         return deck.map(item => {
           let final = info.find(x => x._id.toString() === item.card_id);
-          return {
+          let deck = {
             card_id: final._id,
             card_rarity: item.card_rarity,
             card_number: final.number,
             card_num_id: final.id,
             card_price: final.price_info,
             card_name: final.name,
+            card_type: final.type,
           };
+          if (final.star) deck.card_star = final.star;
+          return deck;
         });
       };
       if (deck.main_deck.length) {
