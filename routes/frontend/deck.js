@@ -52,6 +52,8 @@ router.post('/deckList', limiter, checkToken, async (req, res, next) => {
               number: 1,
               id: 1,
               name: 1,
+              star: 1,
+              type: 1,
             },
           },
         ]);
