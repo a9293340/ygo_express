@@ -1,23 +1,16 @@
 {
-	"articleList": [
-		"/metaDeck",
-		"/serialIntroduction",
-		"/usefulCardIntroduction",
-		"/productInformation",
-		"/rules",
-		"/seriesStory",
-		"/battlePaper"
-	],
-	"list": [
-		"/calendar",
-		"/banner",
-		"/cards",
-		"/cardsImage",
-		"/packType",
-		"/search"
-	],
-	"deckList": ["/deck"],
-	"add": ["/deck"],
-	"edit": ["/deck"],
-	"delete": ["/deck"]
+  "articleList": [
+    "/metaDeck",
+    "/serialIntroduction",
+    "/usefulCardIntroduction",
+    "/productInformation",
+    "/rules",
+    "/seriesStory",
+    "/battlePaper"
+  ],
+  "list": ["/calendar", "/banner", "/cards", "/cardsImage", "/packType", "/search", "member"],
+  "deckList": ["/deck"],
+  "add": ["/deck", "member"],
+  "edit": ["/deck", "member"],
+  "delete": ["/deck"]
 }

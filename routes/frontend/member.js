@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { v4 } = require('uuid');
+const nodemailer = require('nodemailer');
 
 const { MongooseCRUD } = require('../../config/MongoDb/Api');
 const {
@@ -89,8 +90,41 @@ router.post('/add', limiter, checkToken, async (req, res, next) => {
       });
       if (accountTemp.length) next(11003);
       else {
-        await MongooseCRUD('C', 'admin', temp);
-        res.status(200).json({ error_code: 0, data: encryptRes({}) });
+        const transporter = nodemailer.createTransport({
+          host: 'smtp.gmail.com', // SMTP 服务器
+          port: 587, // SMTP 端口
+          secure: false, // 如果端口为 465 则为 true，其他端口一般为 false
+          auth: {
+            user: 'erichong19900327@gmail.com', // 你的邮箱账户
+            pass: 'xayj qvvg yltp bspn', // 你的邮箱密码
+          },
+        });
+        const mailOptions = {
+          from: 'erichong19900327@gmail.com', // 发件人地址
+          to: user.email, // 收件人地址，多个收件人可以使用逗号分隔
+          subject: 'YGO註冊確認連結', // 邮件主题
+          html: `
+            <p>請收到此封郵件後，需在24小時內點選下方連結確認，非常感謝!</p>
+            <a href="http://localhost:8080/email_check/${encryptRes({
+              account: user.account,
+              password: user.password,
+              time: new Date().toTimeString(),
+            }).replace(/\//g, '_')}">請點選此連結
+            </a>
+            <p> 若有任何問題請至官網查詢 : http://cardtime.tw/</a>
+          `, // 邮件 HTML 内容
+        };
+        transporter.sendMail(mailOptions, async function (error, info) {
+          if (error) {
+            console.log('Error sending email: ' + error);
+          } else {
+            console.log('Email sent: ' + info.response);
+            await MongooseCRUD('C', 'admin', temp);
+            res
+              .status(200)
+              .json({ error_code: 0, data: encryptRes({ token: JSON.stringify(temp) }) });
+          }
+        });
       }
     } catch (e) {
       next(10003);
