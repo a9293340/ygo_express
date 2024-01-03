@@ -95,8 +95,8 @@ router.post('/add', limiter, checkToken, async (req, res, next) => {
           port: 587, // SMTP 端口
           secure: false, // 如果端口为 465 则为 true，其他端口一般为 false
           auth: {
-            user: 'erichong19900327@gmail.com', // 你的邮箱账户
-            pass: 'xayj qvvg yltp bspn', // 你的邮箱密码
+            user: process.env.EMAIL, // 你的邮箱账户
+            pass: `${process.env.EPASS1} ${process.env.EPASS2} ${process.env.EPASS3} ${process.env.EPASS4}`, // 你的邮箱密码
           },
         });
         const mailOptions = {
