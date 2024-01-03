@@ -60,9 +60,23 @@ router.post('/resetPassword', limiter, checkToken, async (req, res, next) => {
       if (!user.length) next(11001);
       else if (old_password !== user[0]['password']) next(11002);
       else if (user[0].status) next(10008);
-      else {
-        pEdit(res, next, 'admin', { password: new_password }, user._id);
-      }
+      else pEdit(res, next, 'admin', { password: new_password }, user._id);
+    } catch (error) {
+      next(error);
+    }
+  }
+});
+
+// forgetPassword
+router.post('/forgetPassword', limiter, checkToken, async (req, res, next) => {
+  const { tokenReq, new_password } = decryptRes(req.body.data);
+  if (typeof new_password !== 'string' || typeof tokenReq !== 'string') next(10003);
+  else {
+    try {
+      const user = await MongooseCRUD('R', 'admin', { account: tokenReq });
+      if (!user.length) next(11001);
+      else if (user[0].status) next(10008);
+      else pEdit(res, next, 'admin', { password: new_password }, user._id);
     } catch (error) {
       next(error);
     }
@@ -99,20 +113,31 @@ router.post('/add', limiter, checkToken, async (req, res, next) => {
             pass: `${process.env.EPASS1} ${process.env.EPASS2} ${process.env.EPASS3} ${process.env.EPASS4}`, // 你的邮箱密码
           },
         });
+        const signWords = `
+          <br><br>
+          <br><br>
+          <img src='https://cardtime.tw/favicon-32x32.png'>
+          <span style='font-size: 20px;font-weight: 800;'>卡壇 CardTime - 台灣遊戲王相關資訊網</span>
+          <p>聯絡信箱 : erichong19900327@gmail.com</p>
+        `;
         const mailOptions = {
-          from: 'erichong19900327@gmail.com', // 发件人地址
-          to: user.email, // 收件人地址，多个收件人可以使用逗号分隔
-          subject: 'YGO註冊確認連結', // 邮件主题
+          from: 'erichong19900327@gmail.com',
+          to: user.email,
+          subject: 'CardTime卡壇 註冊確認連結',
           html: `
-            <p>請收到此封郵件後，需在24小時內點選下方連結確認，非常感謝!</p>
-            <a href="http://localhost:8080/email_check/${encryptRes({
+            <p>請收到此封郵件後，需在<span style='font-size: 18px;font-weight: 800;color:red;'>24小時</span>內點選下方連結確認，非常感謝!</p>
+            <a href="https://cardtime.tw/email_check/${encryptRes({
               account: user.account,
-              password: user.password,
-              time: new Date().toTimeString(),
+              date: new Date().toTimeString(),
             }).replace(/\//g, '_')}">請點選此連結
             </a>
-            <p> 若有任何問題請至官網查詢 : http://cardtime.tw/</a>
-          `, // 邮件 HTML 内容
+            <p> 若有任何問題請至官網查詢 : https://cardtime.tw/</a>
+            
+            
+            
+
+            ${signWords}
+          `,
         };
         transporter.sendMail(mailOptions, async function (error, info) {
           if (error) {
@@ -144,14 +169,13 @@ router.post('/verify', limiter, async (req, res, next) => {
   let { verify_code } = decryptRes(req.body.data);
   if (!verify_code) next(10003);
   else {
-    const detail = decryptRes(verify_code);
-    if (!detail || !detail['tokenReq'] || !detail['date']) next(11005);
+    const { account, date, email } = decryptRes(verify_code);
+    if (!account || !date || new Date() - new Date(date) > 24 * 60 * 60) next(11005);
     else {
       // 註冊帳號
-      if (!detail['email']) {
-        const user = await MongooseCRUD('R', 'admin', { account: tokenReq });
+      if (!email) {
+        const user = await MongooseCRUD('R', 'admin', { account });
         if (!user.length) next(11001);
-        else if (user[0].status) next(10008);
         else {
           const arr = await MongooseCRUD('Uo', 'admin', { _id: user._id }, { status: 0 });
           res.status(200).json({
@@ -162,9 +186,8 @@ router.post('/verify', limiter, async (req, res, next) => {
       }
       // 忘記密碼
       else {
-        const user = await MongooseCRUD('R', 'admin', { account: tokenReq, email: detail.email });
+        const user = await MongooseCRUD('R', 'admin', { account, email });
         if (!user.length) next(11006);
-        else if (user[0].status) next(10008);
         else {
           const password = v4();
           const arr = await MongooseCRUD('Uo', 'admin', { _id: user._id }, { password });

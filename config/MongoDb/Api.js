@@ -1,5 +1,5 @@
-const models = require("./models");
-const mongoose = require("mongoose");
+const models = require('./models');
+const mongoose = require('mongoose');
 //環境變數引入
 
 // Reference
@@ -9,73 +9,69 @@ const mongoose = require("mongoose");
 
 //
 
-require("dotenv").config();
+require('dotenv').config();
 const uri = `mongodb+srv://${process.env.ADMIN}:${process.env.PASSWORD}@cluster0.rnvhhr4.mongodb.net/${process.env.DB}?retryWrites=true&w=majority`;
 let db;
-const MongooseCRUD = (
-	type,
-	modelName,
-	filters,
-	options = {},
-	projection = {}
-) => {
-	db = mongoose.connect(uri, {
-		useNewUrlParser: true,
-		useUnifiedTopology: true,
-	});
+const MongooseCRUD = (type, modelName, filters, options = {}, projection = {}) => {
+  db = mongoose.connect(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
 
-	//if type not remark "one" or "many" , transform type to "one".
-	type = type === "U" || type === "D" ? `${type}o` : type;
+  mongoose.set('strictQuery', false);
 
-	const model = mongoose.model(modelName, models[modelName], modelName);
+  //if type not remark "one" or "many" , transform type to "one".
+  type = type === 'U' || type === 'D' ? `${type}o` : type;
 
-	let promise;
-	try {
-		switch (type) {
-			case "C":
-				promise = model.insertMany(filters, { ordered: false });
-				break;
-			case "R":
-				//options : sort skip limit   projection: which you want to show
-				promise = model.find(filters, projection, options).exec();
-				break;
-			case "Uo":
-				//options: target data projection: upsert (default is false)
-				promise = model.updateOne(filters, options, projection).exec();
-				break;
-			case "Um":
-				//options: target data projection: upsert (default is false)
-				promise = model.updateMany(filters, options, projection).exec();
-				break;
-			case "Do":
-				promise = model.deleteOne(filters).exec();
-				break;
-			case "Dm":
-				promise = model.deleteMany(filters).exec();
-				break;
-			case "A":
-				// filter : array ( pipeline )
-				//  for example :
-				// [
-				//   {$match: { key : 'which data you want' }},
-				//   {$group: {_id: "$ + key", total:{$sum : "$ + which you want to sum key"}}},
-				//   {$sort: {targetKey : -1}}
-				// ]
-				promise = model.aggregate(filters).exec();
-				break;
-			case "COUNT":
-				promise = model.find(filters, projection, {}).count().exec();
-				break;
-		}
+  const model = mongoose.model(modelName, models[modelName], modelName);
 
-		return promise;
-	} catch (error) {
-		return new Promise((res) => {
-			res(error, error);
-		});
-	}
+  let promise;
+  try {
+    switch (type) {
+      case 'C':
+        promise = model.insertMany(filters, { ordered: false });
+        break;
+      case 'R':
+        //options : sort skip limit   projection: which you want to show
+        promise = model.find(filters, projection, options).exec();
+        break;
+      case 'Uo':
+        //options: target data projection: upsert (default is false)
+        promise = model.updateOne(filters, options, projection).exec();
+        break;
+      case 'Um':
+        //options: target data projection: upsert (default is false)
+        promise = model.updateMany(filters, options, projection).exec();
+        break;
+      case 'Do':
+        promise = model.deleteOne(filters).exec();
+        break;
+      case 'Dm':
+        promise = model.deleteMany(filters).exec();
+        break;
+      case 'A':
+        // filter : array ( pipeline )
+        //  for example :
+        // [
+        //   {$match: { key : 'which data you want' }},
+        //   {$group: {_id: "$ + key", total:{$sum : "$ + which you want to sum key"}}},
+        //   {$sort: {targetKey : -1}}
+        // ]
+        promise = model.aggregate(filters).exec();
+        break;
+      case 'COUNT':
+        promise = model.find(filters, projection, {}).count().exec();
+        break;
+    }
+
+    return promise;
+  } catch (error) {
+    return new Promise(res => {
+      res(error, error);
+    });
+  }
 };
 
 module.exports = {
-	MongooseCRUD,
+  MongooseCRUD,
 };
