@@ -110,7 +110,7 @@ router.post('/add', limiter, checkToken, async (req, res, next) => {
           secure: false, // 如果端口为 465 则为 true，其他端口一般为 false
           auth: {
             user: process.env.EMAIL, // 你的邮箱账户
-            pass: `${process.env.EPASS1} ${process.env.EPASS2} ${process.env.EPASS3} ${process.env.EPASS4}`, // 你的邮箱密码
+            pass: process.env.EPASS, // 你的邮箱密码
           },
         });
         const signWords = `
@@ -118,7 +118,7 @@ router.post('/add', limiter, checkToken, async (req, res, next) => {
           <br><br>
           <img src='https://cardtime.tw/favicon-32x32.png'>
           <span style='font-size: 20px;font-weight: 800;'>卡壇 CardTime - 台灣遊戲王相關資訊網</span>
-          <p>聯絡信箱 : erichong19900327@gmail.com</p>
+          <p>聯絡信箱 : ygo.cardtime.gmail.com</p>
         `;
         const mailOptions = {
           from: 'erichong19900327@gmail.com',
@@ -132,6 +132,7 @@ router.post('/add', limiter, checkToken, async (req, res, next) => {
             }).replace(/\//g, '_')}">請點選此連結
             </a>
             <p> 若有任何問題請至官網查詢 : https://cardtime.tw/</a>
+            <p> 或請來信至 : ygo.cardtime.gmail.com</a>
             
             
             
