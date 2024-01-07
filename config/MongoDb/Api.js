@@ -13,6 +13,7 @@ require('dotenv').config();
 const uri = `mongodb+srv://${process.env.ADMIN}:${process.env.PASSWORD}@cluster0.rnvhhr4.mongodb.net/${process.env.DB}?retryWrites=true&w=majority`;
 let db;
 const MongooseCRUD = (type, modelName, filters, options = {}, projection = {}) => {
+  mongoose.set('strictQuery', false);
   db = mongoose.connect(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,

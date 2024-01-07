@@ -48,6 +48,12 @@ router.post('/logout', limiter, checkToken, async (req, res, next) => {
 
 router.post('/resetPassword', limiter, checkToken, async (req, res, next) => {
   const { tokenReq, old_password, new_password } = decryptRes(req.body.data);
+  console.log(tokenReq, old_password, new_password);
+  console.log(
+    typeof new_password !== 'string' ||
+      typeof old_password !== 'string' ||
+      typeof tokenReq !== 'string',
+  );
   if (
     typeof new_password !== 'string' ||
     typeof old_password !== 'string' ||
@@ -58,25 +64,9 @@ router.post('/resetPassword', limiter, checkToken, async (req, res, next) => {
     try {
       const user = await MongooseCRUD('R', 'admin', { account: tokenReq });
       if (!user.length) next(11001);
-      else if (old_password !== user[0]['password']) next(11002);
+      else if (new_password === user[0]['password']) next(11007);
       else if (user[0].status) next(10008);
-      else pEdit(res, next, 'admin', { password: new_password }, user._id);
-    } catch (error) {
-      next(error);
-    }
-  }
-});
-
-// forgetPassword
-router.post('/forgetPassword', limiter, checkToken, async (req, res, next) => {
-  const { tokenReq, new_password } = decryptRes(req.body.data);
-  if (typeof new_password !== 'string' || typeof tokenReq !== 'string') next(10003);
-  else {
-    try {
-      const user = await MongooseCRUD('R', 'admin', { account: tokenReq });
-      if (!user.length) next(11001);
-      else if (user[0].status) next(10008);
-      else pEdit(res, next, 'admin', { password: new_password }, user._id);
+      else pEdit(res, next, 'admin', { password: new_password }, user[0]._id);
     } catch (error) {
       next(error);
     }
@@ -94,7 +84,7 @@ router.post('/add', limiter, checkToken, async (req, res, next) => {
       create_date: user.create_date,
       password: user.password,
       email: user.email,
-      photo: user.photo,
+      photo: '',
       status: 1,
       type: 2,
     };
@@ -170,7 +160,8 @@ router.post('/verify', limiter, async (req, res, next) => {
   let { verify_code } = decryptRes(req.body.data);
   if (!verify_code) next(10003);
   else {
-    const { account, date, email } = decryptRes(verify_code);
+    const { account, date, email } = verify_code;
+    console.log(account, date, email);
     if (!account || !date || new Date() - new Date(date) > 24 * 60 * 60) next(11005);
     else {
       // 註冊帳號
@@ -178,7 +169,7 @@ router.post('/verify', limiter, async (req, res, next) => {
         const user = await MongooseCRUD('R', 'admin', { account });
         if (!user.length) next(11001);
         else {
-          const arr = await MongooseCRUD('Uo', 'admin', { _id: user._id }, { status: 0 });
+          const arr = await MongooseCRUD('Uo', 'admin', { account }, { status: 0 });
           res.status(200).json({
             error_code: !arr['matchedCount'] ? 10007 : 0,
             date: encryptRes({}),
@@ -188,10 +179,10 @@ router.post('/verify', limiter, async (req, res, next) => {
       // 忘記密碼
       else {
         const user = await MongooseCRUD('R', 'admin', { account, email });
-        if (!user.length) next(11006);
+        if (!user.length) next(11001);
         else {
           const password = v4();
-          const arr = await MongooseCRUD('Uo', 'admin', { _id: user._id }, { password });
+          const arr = await MongooseCRUD('Uo', 'admin', { account }, { password });
           res.status(200).json(
             !arr['matchedCount']
               ? {

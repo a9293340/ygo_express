@@ -12,5 +12,6 @@
   "deckList": ["/deck"],
   "add": ["/deck", "member"],
   "edit": ["/deck", "member"],
-  "delete": ["/deck"]
+  "delete": ["/deck"],
+  "resetPassword": ["member"]
 }
