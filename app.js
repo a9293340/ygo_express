@@ -92,6 +92,10 @@ function handleEvent(event) {
 
 const client = new line.Client(config);
 
+app.get('/test', (req, res) => {
+  res.send('測試');
+});
+
 app.get('/api/', (req, res) => {
   res.sendfile('./views/index.html');
 });
