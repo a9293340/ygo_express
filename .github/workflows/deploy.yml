@@ -26,6 +26,10 @@ jobs:
           echo ADMIN=${{ secrets.ADMIN }} >> .env
           echo PASSWORD=${{ secrets.PASSWORD }} >> .env
           echo DOMAIN=${{ secrets.DOMAIN }} >> .env
+          echo EMAIL=${{ secrets.EMAIL }} >> .env
+          echo EPASS=${{ secrets.EPASS }} >> .env
+          echo CHANNEL_ACCESS_TOKEN=${{ secrets.CHANNEL_ACCESS_TOKEN }} >> .env
+          echo CHANNEL_SECRET=${{ secrets.CHANNEL_SECRET }} >> .env
           echo DB=ygo >> .env
 
       - name: Install SSH key # 第二步，安裝 SSH 密鑰
