@@ -80,6 +80,7 @@ router.post('/list', limiter, checkToken, async (req, res, next) => {
         price_yuyu: 0,
       },
     });
+  aggregateFilter.push({ $sort: { id: 1 } });
   aggregateFilter.push({ $skip: page * limit });
   aggregateFilter.push({ $limit: limit });
   // console.log(aggregateFilter);
