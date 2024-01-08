@@ -24,6 +24,7 @@ async function handleEvent(event) {
   }
 
   let replyText = '';
+  let img;
   const search = event.message.text.toLowerCase().startsWith('/s ');
   const price = event.message.text.toLowerCase().startsWith('/p ');
   if (search || price) {
@@ -32,6 +33,10 @@ async function handleEvent(event) {
     });
     if (cardId.length) {
       const card = cardId[0];
+      img = {
+        type: 'image',
+        originalContentUrl: `https://cardtime.tw/api/card-image/cards/${card.number}.webp`,
+      };
       if (search) {
         replyText = `
 				卡片名稱 : ${card.name}
@@ -42,20 +47,15 @@ async function handleEvent(event) {
 				類別 : ${card.type}
 				效果 : ${card.effect}
 				版本 : ${card.rarity.join(',')}
-				https://cardtime.tw/api/card-image/cards/${card.number}.webp
 				`;
       } else {
-        console.log(card.rarity);
         const rLens = card.rarity.length;
-        console.log(rLens);
         const prices = card.price_info.slice(-rLens);
-        console.log(prices);
         const priceText = prices.map(
           el => `
 					版本 : ${el.rarity} / 均價 : ${el.price_avg} / 最低價 : ${el.price_lowest}
 				`,
         );
-        console.log(priceText);
 
         replyText = `
 				卡片名稱 : ${card.name}
@@ -76,7 +76,9 @@ async function handleEvent(event) {
   }
 
   // console.log(`Replying with message: ${replyText}`);
-  return client.replyMessage(event.replyToken, { type: 'text', text: replyText });
+  let msg = [{ type: 'text', text: replyText }];
+  if (img) msg.push(img);
+  return client.replyMessage(event.replyToken, msg);
 }
 
 module.exports = router;
