@@ -4,9 +4,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
-import line, { middleware } from '@line/bot-sdk';
-import dotenv from 'dotenv';
-dotenv.config();
+const line = require('@line/bot-sdk');
 
 // const indexRouter = require("./routes/index");
 // const usersRouter = require("./routes/users");
@@ -68,41 +66,31 @@ app.use('/api/deck', deckRouter);
 app.use('/api/member', memberRouter);
 app.use('/api/search', searchRouter);
 
-app.post('/webhook', middleware(config), (req, res) => {
-  Promise.all(req.body.events.map(handleEvent))
-    .then(result => res.json(result))
-    .catch(err => {
-      console.error(err);
-      res.status(500).end();
-    });
+const config = {
+  channelAccessToken: 'YOUR_CHANNEL_ACCESS_TOKEN',
+  channelSecret: 'YOUR_CHANNEL_SECRET',
+};
+
+app.post('/webhook', line.middleware(config), (req, res) => {
+  Promise.all(req.body.events.map(handleEvent)).then(result => res.json(result));
 });
 
-// 處理接收到的訊息
 function handleEvent(event) {
   if (event.type !== 'message' || event.message.type !== 'text') {
-    // 非文字訊息時忽略
     return Promise.resolve(null);
   }
 
-  let responseMessage = '';
-  const text = event.message.text.trim().toLowerCase();
-
-  // 根據訊息內容回應
-  if (text.startsWith('/s ')) {
-    responseMessage = '酷酷的';
-  } else if (text.startsWith('/p ')) {
-    responseMessage = '價格';
+  let replyText = '';
+  if (event.message.text.toLowerCase().startsWith('/s ')) {
+    replyText = '酷酷的';
+  } else if (event.message.text.toLowerCase().startsWith('/p ')) {
+    replyText = '價格';
   }
 
-  if (responseMessage) {
-    return line.Client.replyMessage(event.replyToken, {
-      type: 'text',
-      text: responseMessage,
-    });
-  }
-
-  return Promise.resolve(null);
+  return client.replyMessage(event.replyToken, { type: 'text', text: replyText });
 }
+
+const client = new line.Client(config);
 
 app.get('/api/', (req, res) => {
   res.sendfile('./views/index.html');
