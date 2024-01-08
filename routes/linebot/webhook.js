@@ -2,6 +2,44 @@ const express = require('express');
 const router = express.Router();
 const line = require('@line/bot-sdk');
 const { MongooseCRUD } = require('../../config/MongoDb/Api');
+// const Jimp = require('jimp');
+const sharp = require('sharp');
+const axios = require('axios');
+const fs = require('fs');
+
+// async function downloadAndConvertImage(url, number) {
+//   try {
+//     const response = await axios.get(url, { responseType: 'arraybuffer' });
+//     const image = await Jimp.read(response.data);
+//     const fileName = `./public/image/linebot/${number}.jpeg`;
+//     await image.writeAsync(fileName);
+//     return fileName;
+//   } catch (error) {
+//     console.error('Error:', error);
+//   }
+// }
+
+async function downloadAndConvertImage(url, number) {
+  try {
+    const response = await axios({
+      url,
+      responseType: 'arraybuffer',
+    });
+
+    const convertedBuffer = await sharp(response.data)
+      .toFormat('jpeg')
+      .jpeg({ quality: 90 })
+      .toBuffer();
+    console.log(convertedBuffer);
+    const fileName = `./public/image/linebot/${number}.jpeg`;
+    fs.writeFileSync(fileName, convertedBuffer);
+
+    return fileName;
+  } catch (error) {
+    console.error('Error downloading or converting image:', error);
+  }
+}
+
 const config = {
   channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
   channelSecret: process.env.CHANNEL_SECRET,
@@ -33,9 +71,14 @@ async function handleEvent(event) {
     });
     if (cardId.length) {
       const card = cardId[0];
+      const url = `https://cardtime.tw/api/card-image/cards/${card.number}.webp`;
+      await downloadAndConvertImage(url, card.number);
+      const jpg = `https://cardtime.tw/api/card-image/linebot/${card.number}.jpeg`;
+      console.log(jpg);
       img = {
         type: 'image',
-        originalContentUrl: `https://cardtime.tw/api/card-image/cards/${card.number}.webp`,
+        originalContentUrl: jpg,
+        previewImageUrl: jpg,
       };
       if (search) {
         replyText = `
@@ -78,6 +121,7 @@ async function handleEvent(event) {
   // console.log(`Replying with message: ${replyText}`);
   let msg = [{ type: 'text', text: replyText }];
   if (img) msg.push(img);
+  console.log(msg);
   return client.replyMessage(event.replyToken, msg);
 }
 
