@@ -94,6 +94,12 @@ function handleEvent(event) {
     replyText = '價格';
   }
 
+  // 處理空消息或未知命令的情況
+  if (replyText === '') {
+    replyText = '未知命令'; // 或者直接 return Promise.resolve(null) 以不回應
+  }
+
+  console.log(`Replying with message: ${replyText}`);
   return client.replyMessage(event.replyToken, { type: 'text', text: replyText });
 }
 
