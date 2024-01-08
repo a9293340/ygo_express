@@ -71,7 +71,7 @@ const config = {
   channelSecret: 'YOUR_CHANNEL_SECRET',
 };
 
-app.post('/webhook', line.middleware(config), (req, res) => {
+app.post('/api/webhook', line.middleware(config), (req, res) => {
   Promise.all(req.body.events.map(handleEvent)).then(result => res.json(result));
 });
 
