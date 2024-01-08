@@ -71,8 +71,15 @@ const config = {
   channelSecret: 'YOUR_CHANNEL_SECRET',
 };
 
+const client = new line.Client(config);
+
 app.post('/api/webhook', line.middleware(config), (req, res) => {
-  Promise.all(req.body.events.map(handleEvent)).then(result => res.json(result));
+  Promise.all(req.body.events.map(handleEvent))
+    .then(result => res.json(result))
+    .catch(err => {
+      console.error(err);
+      res.status(500).end();
+    });
 });
 
 function handleEvent(event) {
@@ -89,8 +96,6 @@ function handleEvent(event) {
 
   return client.replyMessage(event.replyToken, { type: 'text', text: replyText });
 }
-
-const client = new line.Client(config);
 
 app.get('/api/test', (req, res) => {
   res.send('測試');
