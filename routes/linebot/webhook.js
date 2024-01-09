@@ -23,7 +23,7 @@ const lineNotifyURL = "https://notify-api.line.me/api/notify";
 
 const sendLineNotify = async (message) => {
 	try {
-		await fetch(lineNotifyURL, {
+		const a = await fetch(lineNotifyURL, {
 			method: "POST",
 			headers: {
 				Authorization: `Bearer ${token}`,
@@ -33,6 +33,7 @@ const sendLineNotify = async (message) => {
 				message,
 			}).toString(),
 		});
+		// console.log(a.json());
 	} catch (error) {
 		console.error("Error:", error);
 	}
@@ -78,9 +79,11 @@ const containsJapanese = (text) => {
 };
 
 const getJudRulesLink = async (text) => {
+	// console.log(text);
 	const type = containsJapanese(text) ? 1 : 4;
 	const tar = containsJapanese(text) ? encodeURIComponent(text) : text;
 	const url = urls(tar, type);
+	// console.log(url);
 	const res = await reptileTargetUrl(url);
 	const body = iconv.decode(Buffer.from(res), "UTF-8");
 	const $ = cheerio.load(body);
@@ -168,9 +171,10 @@ async function handleEvent(event) {
 
 			let replyText = `解除限制，歡迎使用CardTime Line bot \n`;
 			replyText += `此line bot屬於CardTime所有\n`;
-			replyText += `歡迎造訪CardTime網頁 : https://cardtime.tw\n`;
 			replyText += `請輸入 /功能 來看看我有啥能力吧~\n`;
+			replyText += `歡迎造訪CardTime網頁 : https://cardtime.tw \n`;
 			groupKey = generateRandomString(16);
+			console.log(groupKey);
 			await sendLineNotify(`密鑰變更為 : ${groupKey}`);
 			return client.replyMessage(event.replyToken, [
 				{ type: "text", text: replyText },
@@ -187,7 +191,8 @@ async function handleEvent(event) {
 	const rules = event.message.text.toLowerCase().startsWith("/r ");
 	const functions = event.message.text.toLowerCase().startsWith("/功能");
 	if (search || price) {
-		const tarText = event.message.text.toUpperCase().split(" ")[1];
+		const judgement = search ? "/S " : "/P ";
+		const tarText = event.message.text.toUpperCase().split(judgement)[1];
 		let filter;
 		let jud = "";
 		// 卡片密碼
@@ -257,7 +262,7 @@ async function handleEvent(event) {
 		}
 	} else if (deck) {
 		const decks = await MongooseCRUD("R", "decks", {
-			title: fuzzySearch(event.message.text.toUpperCase().split(" ")[1]),
+			title: fuzzySearch(event.message.text.toUpperCase().split("/D ")[1]),
 		});
 		if (decks.length) {
 			for (let i = 0; i < decks.length; i++) {
@@ -270,7 +275,7 @@ async function handleEvent(event) {
 			...new Set(
 				(
 					await MongooseCRUD("R", "cards", {
-						name: fuzzySearch(event.message.text.toUpperCase().split(" ")[1]),
+						name: fuzzySearch(event.message.text.toUpperCase().split("/L ")[1]),
 					})
 				).map((el) => el.name)
 			),
@@ -285,22 +290,18 @@ async function handleEvent(event) {
 			replyText =
 				"無此字段相關的卡片，可能翻譯問題(Ex: 如光道/光之領主)，請嘗試其他譯名";
 	} else if (rules) {
-		const url = await getJudRulesLink(
-			event.message.text.toUpperCase().split(" ")[1]
-		);
+		const tarText = event.message.text.toUpperCase().split("/R ")[1];
+		console.log(tarText);
+		const url = await getJudRulesLink(tarText);
 		if (Array.isArray(url)) {
-			replyText += `${
-				event.message.text.toUpperCase().split(" ")[1]
-			} 相關系列卡日文如下 :\n`;
+			replyText += `${tarText} 相關系列卡日文如下 :\n`;
 			for (let i = 0; i < url.length; i++) {
 				const card = url[i];
 				replyText += `${card} \n`;
 			}
 			replyText += "請則依搜索該卡Q&A";
 		} else if (url) {
-			replyText += `${
-				event.message.text.toUpperCase().split(" ")[1]
-			} 判例連結如下 :\n`;
+			replyText += `${tarText} 判例連結如下 :\n`;
 			replyText += url;
 		} else replyText += "找不到此卡，請輸入日文";
 	} else if (functions || isNotFormatFunc(event.message.text)) {
