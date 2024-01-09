@@ -14,6 +14,9 @@ const {
 	reptileTargetUrl,
 } = require("../../config/reptile/reptileTargetUrl.js");
 
+const userWhiteId = ["U4a0c5ed43235ae686454440518bcbc5b"];
+let joinTimestamps = {};
+
 // async function downloadAndConvertImage(url, number) {
 //   try {
 //     const response = await axios.get(url, { responseType: 'arraybuffer' });
@@ -109,8 +112,48 @@ router.post("/", (req, res) => {
 });
 
 async function handleEvent(event) {
+	const groupId = event.source.groupId;
+
+	// 個人用戶只允許白名單
+	if (event.source.type === "user") {
+		if (!userWhiteId.find((el) => el === event.source.userId))
+			return Promise.resolve(null);
+	}
+
+	// 群組需要在時限內輸入密鑰否則退出
+	if (event.type === "join" && event.source.type === "group") {
+		joinTimestamps[groupId] = Date.now();
+
+		// 設置五秒後檢查
+		setTimeout(async () => {
+			if (Date.now() - joinTimestamps[groupId] >= 10000) {
+				// 如果五秒後仍在joinTimestamps中，則離開群組
+				await client.leaveGroup(groupId);
+				delete joinTimestamps[groupId];
+			}
+		}, 10000);
+
+		return client.replyMessage(event.replyToken, [
+			{ type: "text", text: "請於10秒鐘輸入通行令" },
+		]);
+	}
+
 	if (event.type !== "message" || event.message.type !== "text") {
 		return Promise.resolve(null);
+	}
+
+	if (event.type === "message" && event.source.type === "group") {
+		if (joinTimestamps[groupId] && event.message.text === "cj/6rmp4xjp6") {
+			delete joinTimestamps[groupId];
+
+			let replyText = `解除限制，歡迎使用CardTime Line bot \n`;
+			replyText += `此line bot屬於CardTime所有\n`;
+			replyText += `歡迎造訪CardTime網頁 : https://cardtime.tw\n`;
+			replyText += `請輸入 /功能 來看看我有啥能力吧~\n`;
+			return client.replyMessage(event.replyToken, [
+				{ type: "text", text: replyText },
+			]);
+		}
 	}
 
 	let replyText = "";
