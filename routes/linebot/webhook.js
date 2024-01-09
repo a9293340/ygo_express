@@ -220,6 +220,8 @@ async function handleEvent(event) {
 		const cardId = await MongooseCRUD("R", "cards", filter);
 		if (cardId.length) {
 			const card = cardId[0];
+			let ids;
+			if (cardId.length > 1) ids = cardId.map((el) => el.id).join(",");
 			const url = `https://cardtime.tw/api/card-image/cards/${card.number}.webp`;
 			await downloadAndConvertImage(url, card.number);
 			const jpg = `https://cardtime.tw/api/card-image/linebot/${card.number}.jpeg`;
@@ -239,7 +241,9 @@ async function handleEvent(event) {
 				} / 等級 : ${card.star ? card.star : "-"}\n`;
 				replyText += `類別 : ${card.type}\n`;
 				replyText += `效果 : ${card.effect}\n`;
-				if (!jud) replyText += `版本 : ${card.rarity.join(",")}\n`;
+				replyText += !jud
+					? `版本 : ${card.rarity.join(",")}\n`
+					: `卡號 : ${ids}\n`;
 			} else {
 				const rLens = card.rarity.length;
 				const prices = card.price_info.slice(-rLens);
