@@ -80,7 +80,7 @@ const decryptRes = (tar) => {
 const encryptRes = (tar) =>
 	CryptoJS.AES.encrypt(JSON.stringify(tar), "C8763").toString();
 
-const fuzzySearch = (str) => new RegExp(`.*${str}.*$`);
+const fuzzySearch = (str) => new RegExp(`.*${str}.*`, "i");
 
 module.exports = {
 	checkToken,

@@ -191,8 +191,8 @@ async function handleEvent(event) {
 	const rules = event.message.text.toLowerCase().startsWith("/r ");
 	const functions = event.message.text.toLowerCase().startsWith("/功能");
 	if (search || price) {
-		const judgement = search ? "/S " : "/P ";
-		const tarText = event.message.text.toUpperCase().split(judgement)[1];
+		const tarText = event.message.text.substr(3);
+		// console.log(tarText);
 		let filter;
 		let jud = "";
 		// 卡片密碼
@@ -202,7 +202,10 @@ async function handleEvent(event) {
 			};
 			jud = "n";
 			// 中文
-		} else if (isChinese(tarText) && search) {
+		} else if (
+			(isChinese(tarText) || tarText.split(" ").length > 0) &&
+			search
+		) {
 			const tranChi = convertSimplifiedToTraditional(tarText);
 			// console.log(tranChi);
 			filter = {
@@ -262,7 +265,7 @@ async function handleEvent(event) {
 		}
 	} else if (deck) {
 		const decks = await MongooseCRUD("R", "decks", {
-			title: fuzzySearch(event.message.text.toUpperCase().split("/D ")[1]),
+			title: fuzzySearch(event.message.text.substr(3)),
 		});
 		if (decks.length) {
 			for (let i = 0; i < decks.length; i++) {
@@ -290,7 +293,7 @@ async function handleEvent(event) {
 			replyText =
 				"無此字段相關的卡片，可能翻譯問題(Ex: 如光道/光之領主)，請嘗試其他譯名";
 	} else if (rules) {
-		const tarText = event.message.text.toUpperCase().split("/R ")[1];
+		const tarText = event.message.text.substr(3);
 		console.log(tarText);
 		const url = await getJudRulesLink(tarText);
 		if (Array.isArray(url)) {
