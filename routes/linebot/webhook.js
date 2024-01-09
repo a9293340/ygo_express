@@ -8,6 +8,11 @@ const axios = require("axios");
 const fs = require("fs");
 const { fuzzySearch } = require("../../config/tools/encryptNToken");
 const OpenCC = require("opencc-js");
+const cheerio = require("cheerio");
+const iconv = require("iconv-lite");
+const {
+	reptileTargetUrl,
+} = require("../../config/reptile/reptileTargetUrl.js");
 
 // async function downloadAndConvertImage(url, number) {
 //   try {
@@ -21,20 +26,19 @@ const OpenCC = require("opencc-js");
 //   }
 // }
 
-function isChinese(text) {
-	return /[\u4e00-\u9fff]/.test(text);
-}
+const urls = (str, type) =>
+	`https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=1&sess=1&rp=10&mode=&sort=1&keyword=${str}&stype=${type}&ctype=&othercon=2&starfr=&starto=&pscalefr=&pscaleto=&linkmarkerfr=&linkmarkerto=&link_m=2&atkfr=&atkto=&deffr=&defto=&request_locale=ja`;
 
-function isNotFormatFunc(text) {
-	return /^\/[^\[lpdrLPDR\]]\s.*/.test(text);
-}
+const isChinese = (text) => /[\u4e00-\u9fff]/.test(text);
 
-function convertSimplifiedToTraditional(text) {
+const isNotFormatFunc = (text) => /^\/[^\[lpdrsLPDRS\]]\s.*/.test(text);
+
+const convertSimplifiedToTraditional = (text) => {
 	const converter = OpenCC.Converter({ from: "cn", to: "tw", cache: true });
 	return converter(text);
-}
+};
 
-async function downloadAndConvertImage(url, number) {
+const downloadAndConvertImage = async (url, number) => {
 	try {
 		const response = await axios({
 			url,
@@ -45,7 +49,7 @@ async function downloadAndConvertImage(url, number) {
 			.toFormat("jpeg")
 			.jpeg({ quality: 90 })
 			.toBuffer();
-		console.log(convertedBuffer);
+		// console.log(convertedBuffer);
 		const fileName = `./public/image/linebot/${number}.jpeg`;
 		fs.writeFileSync(fileName, convertedBuffer);
 
@@ -53,7 +57,40 @@ async function downloadAndConvertImage(url, number) {
 	} catch (error) {
 		console.error("Error downloading or converting image:", error);
 	}
-}
+};
+
+const containsJapanese = (text) => {
+	const japaneseRegex =
+		/[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF\u3400-\u4DBF]/;
+	return japaneseRegex.test(text);
+};
+
+const getJudRulesLink = async (text) => {
+	const type = containsJapanese(text) ? 1 : 4;
+	const tar = containsJapanese(text) ? encodeURIComponent(text) : text;
+	const url = urls(tar, type);
+	const res = await reptileTargetUrl(url);
+	const body = iconv.decode(Buffer.from(res), "UTF-8");
+	const $ = cheerio.load(body);
+
+	const lens = $("#card_list").children(".t_row.c_normal").length;
+
+	if (lens === 1)
+		return `https://www.db.yugioh-card.com${$(".link_value").attr("value")}`;
+	else if (lens === 0) return "";
+	else {
+		let box = [];
+		$("#card_list")
+			.children(".t_row.c_normal")
+			.children(".flex_1")
+			.children(".box_card_name.flex_1.top_set")
+			.children(".card_name")
+			.each((n, card) => {
+				box.push($(card).text());
+			});
+		return box;
+	}
+};
 
 const config = {
 	channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
@@ -82,6 +119,7 @@ async function handleEvent(event) {
 	const price = event.message.text.toLowerCase().startsWith("/p ");
 	const deck = event.message.text.toLowerCase().startsWith("/d ");
 	const list = event.message.text.toLowerCase().startsWith("/l ");
+	const rules = event.message.text.toLowerCase().startsWith("/r ");
 	const functions = event.message.text.toLowerCase().startsWith("/功能");
 	if (search || price) {
 		const tarText = event.message.text.toUpperCase().split(" ")[1];
@@ -181,6 +219,25 @@ async function handleEvent(event) {
 		} else
 			replyText =
 				"無此字段相關的卡片，可能翻譯問題(Ex: 如光道/光之領主)，請嘗試其他譯名";
+	} else if (rules) {
+		const url = await getJudRulesLink(
+			event.message.text.toUpperCase().split(" ")[1]
+		);
+		if (Array.isArray(url)) {
+			replyText += `${
+				event.message.text.toUpperCase().split(" ")[1]
+			} 相關系列卡日文如下 :\n`;
+			for (let i = 0; i < url.length; i++) {
+				const card = url[i];
+				replyText += `${card} \n`;
+			}
+			replyText += "請則依搜索該卡Q&A";
+		} else if (url) {
+			replyText += `${
+				event.message.text.toUpperCase().split(" ")[1]
+			} 判例連結如下 :\n`;
+			replyText += url;
+		} else replyText += "找不到此卡，請輸入日文";
 	} else if (functions || isNotFormatFunc(event.message.text)) {
 		replyText += `功能列表 (不分大小寫)\n\n`;
 		replyText += `搜尋效果及卡片詳情 :\n`;
@@ -191,6 +248,8 @@ async function handleEvent(event) {
 		replyText += `/p + 卡號\n\n`;
 		replyText += `搜尋牌組(模糊搜尋)(條列) :\n`;
 		replyText += `/d + 牌組名稱\n\n`;
+		replyText += `搜尋卡片QA(需以日文搜尋) :\n`;
+		replyText += `/r + 日文卡名`;
 	}
 
 	// 處理空消息或未知命令的情況
@@ -201,7 +260,7 @@ async function handleEvent(event) {
 	// console.log(`Replying with message: ${replyText}`);
 	let msg = [{ type: "text", text: replyText }];
 	if (img) msg.push(img);
-	console.log(msg);
+	// console.log(msg);
 	return client.replyMessage(event.replyToken, msg);
 }
 
