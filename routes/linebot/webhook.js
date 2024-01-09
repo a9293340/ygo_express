@@ -221,7 +221,12 @@ async function handleEvent(event) {
 		if (cardId.length) {
 			const card = cardId[0];
 			let ids;
-			if (jud) ids = cardId.map((el) => el.id).join(",");
+			if (jud)
+				cardId
+					.map((el) => ({ id: el.id, rarity: el.rarity.join(",") }))
+					.forEach((item) => {
+						ids += `* ${item.id} : ${item.rarity} \n`;
+					});
 			const url = `https://cardtime.tw/api/card-image/cards/${card.number}.webp`;
 			await downloadAndConvertImage(url, card.number);
 			const jpg = `https://cardtime.tw/api/card-image/linebot/${card.number}.jpeg`;
