@@ -17,9 +17,10 @@ jobs:
         with:
           node-version: 18
 
-      - name: npm install, build and test
+      - name: yarn install, build and test
         run: |
-          npm install
+          yarn install
+          yarn add sharp --ignore-engines
 
       - name: Create .env file
         run: |
