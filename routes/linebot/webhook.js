@@ -248,8 +248,8 @@ async function handleEvent(event) {
 		replyText += `/p + 卡號\n\n`;
 		replyText += `搜尋牌組(模糊搜尋)(條列) :\n`;
 		replyText += `/d + 牌組名稱\n\n`;
-		replyText += `搜尋卡片QA(需以日文搜尋) :\n`;
-		replyText += `/r + 日文卡名`;
+		replyText += `搜尋卡片QA (卡名需用日文) :\n`;
+		replyText += `/r + 日文卡名/卡號 `;
 	}
 
 	// 處理空消息或未知命令的情況
