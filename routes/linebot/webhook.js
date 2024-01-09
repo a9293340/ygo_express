@@ -7,6 +7,7 @@ const sharp = require("sharp");
 const axios = require("axios");
 const fs = require("fs");
 const { fuzzySearch } = require("../../config/tools/encryptNToken");
+const OpenCC = require("opencc-js");
 
 // async function downloadAndConvertImage(url, number) {
 //   try {
@@ -19,6 +20,19 @@ const { fuzzySearch } = require("../../config/tools/encryptNToken");
 //     console.error('Error:', error);
 //   }
 // }
+
+function isChinese(text) {
+	return /^[\u4e00-\u9fff]+$/.test(text);
+}
+
+function isNotFormatFunc(text) {
+	return /^\/[^\[lpdrLPDR\]]\s.*/.test(text);
+}
+
+function convertSimplifiedToTraditional(text) {
+	const converter = OpenCC.Converter({ from: "cn", to: "tw", cache: true });
+	return converter(text);
+}
 
 async function downloadAndConvertImage(url, number) {
 	try {
@@ -67,16 +81,38 @@ async function handleEvent(event) {
 	const search = event.message.text.toLowerCase().startsWith("/s ");
 	const price = event.message.text.toLowerCase().startsWith("/p ");
 	const deck = event.message.text.toLowerCase().startsWith("/d ");
+	const list = event.message.text.toLowerCase().startsWith("/l ");
+	const functions = event.message.text.toLowerCase().startsWith("/功能");
 	if (search || price) {
-		const cardId = await MongooseCRUD("R", "cards", {
-			id: event.message.text.toUpperCase().split(" ")[1],
-		});
+		const tarText = event.message.text.toUpperCase().split(" ")[1];
+		let filter;
+		let jud = "";
+		// 卡片密碼
+		if (Number.isInteger(parseInt(tarText)) && search) {
+			filter = {
+				number: tarText,
+			};
+			jud = "n";
+			// 中文
+		} else if (isChinese(tarText) && search) {
+			const tranChi = convertSimplifiedToTraditional(tarText);
+			// console.log(tranChi);
+			filter = {
+				name: tranChi,
+			};
+			jud = "c";
+			// 卡號
+		} else
+			filter = {
+				id: tarText,
+			};
+		const cardId = await MongooseCRUD("R", "cards", filter);
 		if (cardId.length) {
 			const card = cardId[0];
 			const url = `https://cardtime.tw/api/card-image/cards/${card.number}.webp`;
 			await downloadAndConvertImage(url, card.number);
 			const jpg = `https://cardtime.tw/api/card-image/linebot/${card.number}.jpeg`;
-			console.log(jpg);
+			// console.log(jpg);
 			img = {
 				type: "image",
 				originalContentUrl: jpg,
@@ -90,7 +126,7 @@ async function handleEvent(event) {
 				} / 等級 : ${card.star ? card.star : "-"}\n`;
 				replyText += `類別 : ${card.type}\n`;
 				replyText += `效果 : ${card.effect}\n`;
-				replyText += `版本 : ${card.rarity.join(",")}\n`;
+				if (!jud) replyText += `版本 : ${card.rarity.join(",")}\n`;
 			} else {
 				const rLens = card.rarity.length;
 				const prices = card.price_info.slice(-rLens);
@@ -107,7 +143,13 @@ async function handleEvent(event) {
 					replyText += `${pt}`;
 				}
 			}
-		} else replyText = "無此卡片";
+		} else {
+			if (isChinese(tarText)) {
+				replyText += `查無此卡(${tarText})，可依照下述方式取得資訊 :\n`;
+				replyText += `1. /l ${tarText} 取得所有相關卡片名稱列表\n`;
+				replyText += `2. /s 目標 取得目標卡牌資訊\n`;
+			} else replyText = "無此卡片";
+		}
 	} else if (deck) {
 		const decks = await MongooseCRUD("R", "decks", {
 			title: fuzzySearch(event.message.text.toUpperCase().split(" ")[1]),
@@ -118,6 +160,31 @@ async function handleEvent(event) {
 				replyText += `牌組名稱 : ${deckInfo.title}\nhttps://cardtime.tw/deck/${deckInfo._id}\n`;
 			}
 		} else replyText += "無此牌組";
+	} else if (list) {
+		const lists = [
+			...new Set(
+				(
+					await MongooseCRUD("R", "cards", {
+						name: fuzzySearch(event.message.text.toUpperCase().split(" ")[1]),
+					})
+				).map((el) => el.name)
+			),
+		];
+		if (lists.length) {
+			replyText += `相關卡片條列如下 : \n`;
+			for (let i = 0; i < lists.length; i++) {
+				const item = lists[i];
+				replyText += `${item} \n`;
+			}
+		} else
+			replyText =
+				"無此字段相關的卡片，因翻譯問題(Ex: 如光道/光之領主)，請嘗試其他譯名";
+	} else if (functions || isNotFormatFunc(event.message.text)) {
+		replyText += `功能列表 : (斜線後不分大小寫)\n`;
+		replyText += `搜尋效果及卡片細節 : /s 卡號/卡片密碼/名稱\n`;
+		replyText += `搜尋相關卡片名稱 : /s 名稱(模糊搜尋) (條列)\n`;
+		replyText += `搜尋卡價 : /p 卡號\n`;
+		replyText += `搜尋牌組 : /d 牌組名稱(模糊搜尋) (條列)\n`;
 	}
 
 	// 處理空消息或未知命令的情況
