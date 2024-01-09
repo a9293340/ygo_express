@@ -220,7 +220,7 @@ async function handleEvent(event) {
 		const cardId = await MongooseCRUD("R", "cards", filter);
 		if (cardId.length) {
 			const card = cardId[0];
-			let ids;
+			let ids = "";
 			if (jud)
 				cardId
 					.map((el) => ({ id: el.id, rarity: el.rarity.join(",") }))
