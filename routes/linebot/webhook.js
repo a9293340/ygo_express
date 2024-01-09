@@ -120,7 +120,9 @@ async function handleEvent(event) {
 			};
 			if (search) {
 				replyText += `卡片名稱 : ${card.name}\n`;
-				replyText += `攻擊/守備 : ${card.atk}/${card.def}\n`;
+				replyText += `攻擊/守備 : ${card.atk ? card.atk : "-"}/${
+					card.def ? card.def : "-"
+				}\n`;
 				replyText += `屬性 : ${card.attribute} / 種族 : ${
 					card.race ? card.race : "-"
 				} / 等級 : ${card.star ? card.star : "-"}\n`;
@@ -159,7 +161,7 @@ async function handleEvent(event) {
 				const deckInfo = decks[i];
 				replyText += `牌組名稱 : ${deckInfo.title}\nhttps://cardtime.tw/deck/${deckInfo._id}\n`;
 			}
-		} else replyText += "無此牌組";
+		} else replyText += "查無此字段的相關牌組";
 	} else if (list) {
 		const lists = [
 			...new Set(
@@ -178,13 +180,17 @@ async function handleEvent(event) {
 			}
 		} else
 			replyText =
-				"無此字段相關的卡片，因翻譯問題(Ex: 如光道/光之領主)，請嘗試其他譯名";
+				"無此字段相關的卡片，可能翻譯問題(Ex: 如光道/光之領主)，請嘗試其他譯名";
 	} else if (functions || isNotFormatFunc(event.message.text)) {
-		replyText += `功能列表 : (斜線後不分大小寫)\n`;
-		replyText += `搜尋效果及卡片細節 : /s 卡號/卡片密碼/名稱\n`;
-		replyText += `搜尋相關卡片名稱 : /s 名稱(模糊搜尋) (條列)\n`;
-		replyText += `搜尋卡價 : /p 卡號\n`;
-		replyText += `搜尋牌組 : /d 牌組名稱(模糊搜尋) (條列)\n`;
+		replyText += `功能列表 (不分大小寫)\n\n`;
+		replyText += `搜尋效果及卡片詳情 :\n`;
+		replyText += `/s + 卡號/卡片密碼/名稱\n\n`;
+		replyText += `搜尋相關卡片名稱(模糊搜尋)(條列) :\n`;
+		replyText += `/l + 卡片名稱\n\n`;
+		replyText += `搜尋卡價 :\n`;
+		replyText += `/p + 卡號\n\n`;
+		replyText += `搜尋牌組(模糊搜尋)(條列) :\n`;
+		replyText += `/d + 牌組名稱\n\n`;
 	}
 
 	// 處理空消息或未知命令的情況
