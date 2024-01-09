@@ -22,7 +22,7 @@ const OpenCC = require("opencc-js");
 // }
 
 function isChinese(text) {
-	return /^[\u4e00-\u9fff]+$/.test(text);
+	return /[\u4e00-\u9fff]/.test(text);
 }
 
 function isNotFormatFunc(text) {
