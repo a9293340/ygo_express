@@ -238,8 +238,8 @@ async function handleEvent(event) {
 			};
 			if (search) {
 				replyText += `卡片名稱 : ${card.name}\n`;
-				replyText += `攻擊/守備 : ${card.atk >= 0 ? card.atk : "-"}/${
-					card.def >= 0 ? card.def : "-"
+				replyText += `攻擊/守備 : ${card.atk !== null ? card.atk : "-"}/${
+					card.def !== null ? card.def : "-"
 				}\n`;
 				replyText += `屬性 : ${card.attribute} / 種族 : ${
 					card.race ? card.race : "-"
