@@ -221,7 +221,7 @@ async function handleEvent(event) {
 		if (cardId.length) {
 			const card = cardId[0];
 			let ids;
-			if (cardId.length > 1) ids = cardId.map((el) => el.id).join(",");
+			if (jud) ids = cardId.map((el) => el.id).join(",");
 			const url = `https://cardtime.tw/api/card-image/cards/${card.number}.webp`;
 			await downloadAndConvertImage(url, card.number);
 			const jpg = `https://cardtime.tw/api/card-image/linebot/${card.number}.jpeg`;
