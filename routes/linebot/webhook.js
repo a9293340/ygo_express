@@ -16,18 +16,27 @@ const {
 
 const userWhiteId = ["U4a0c5ed43235ae686454440518bcbc5b"];
 let joinTimestamps = {};
+let groupKey = "cj/6rmp4xjp6";
 
-// async function downloadAndConvertImage(url, number) {
-//   try {
-//     const response = await axios.get(url, { responseType: 'arraybuffer' });
-//     const image = await Jimp.read(response.data);
-//     const fileName = `./public/image/linebot/${number}.jpeg`;
-//     await image.writeAsync(fileName);
-//     return fileName;
-//   } catch (error) {
-//     console.error('Error:', error);
-//   }
-// }
+const token = process.env.LINENOTIFY; // 將此替換為您的 LINE Notify 權杖
+const lineNotifyURL = "https://notify-api.line.me/api/notify";
+
+const sendLineNotify = async (message) => {
+	try {
+		await fetch(lineNotifyURL, {
+			method: "POST",
+			headers: {
+				Authorization: `Bearer ${token}`,
+				"Content-Type": "application/x-www-form-urlencoded",
+			},
+			body: new URLSearchParams({
+				message,
+			}).toString(),
+		});
+	} catch (error) {
+		console.error("Error:", error);
+	}
+};
 
 const urls = (str, type) =>
 	`https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=1&sess=1&rp=10&mode=&sort=1&keyword=${str}&stype=${type}&ctype=&othercon=2&starfr=&starto=&pscalefr=&pscaleto=&linkmarkerfr=&linkmarkerto=&link_m=2&atkfr=&atkto=&deffr=&defto=&request_locale=ja`;
@@ -95,6 +104,17 @@ const getJudRulesLink = async (text) => {
 	}
 };
 
+const generateRandomString = (length) => {
+	const characters =
+		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^";
+	let result = "";
+	const charactersLength = characters.length;
+	for (let i = 0; i < length; i++) {
+		result += characters.charAt(Math.floor(Math.random() * charactersLength));
+	}
+	return result;
+};
+
 const config = {
 	channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
 	channelSecret: process.env.CHANNEL_SECRET,
@@ -143,13 +163,15 @@ async function handleEvent(event) {
 	}
 
 	if (event.type === "message" && event.source.type === "group") {
-		if (joinTimestamps[groupId] && event.message.text === "cj/6rmp4xjp6") {
+		if (joinTimestamps[groupId] && event.message.text === groupKey) {
 			delete joinTimestamps[groupId];
 
 			let replyText = `解除限制，歡迎使用CardTime Line bot \n`;
 			replyText += `此line bot屬於CardTime所有\n`;
 			replyText += `歡迎造訪CardTime網頁 : https://cardtime.tw\n`;
 			replyText += `請輸入 /功能 來看看我有啥能力吧~\n`;
+			groupKey = generateRandomString(16);
+			await sendLineNotify(`密鑰變更為 : ${groupKey}`);
 			return client.replyMessage(event.replyToken, [
 				{ type: "text", text: replyText },
 			]);
