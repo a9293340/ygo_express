@@ -225,7 +225,7 @@ async function handleEvent(event) {
 				cardId
 					.map((el) => ({ id: el.id, rarity: el.rarity.join(",") }))
 					.forEach((item) => {
-						ids += `* ${item.id} : ${item.rarity} \n`;
+						if (item) ids += `* ${item.id} : ${item.rarity} \n`;
 					});
 			const url = `https://cardtime.tw/api/card-image/cards/${card.number}.webp`;
 			await downloadAndConvertImage(url, card.number);
@@ -246,9 +246,8 @@ async function handleEvent(event) {
 				} / 等級 : ${card.star ? card.star : "-"}\n`;
 				replyText += `類別 : ${card.type}\n`;
 				replyText += `效果 : ${card.effect}\n`;
-				replyText += !jud
-					? `版本 : ${card.rarity.join(",")}\n`
-					: `卡號 : ${ids}\n`;
+				replyText += !jud ? `版本 : ${card.rarity.join(",")}\n` : `卡號 :\n`;
+				if (jud) replyText += ids;
 			} else {
 				const rLens = card.rarity.length;
 				const prices = card.price_info.slice(-rLens);
