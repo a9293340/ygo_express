@@ -14,7 +14,7 @@ const { reptileTargetUrl } = require('../../config/reptile/reptileTargetUrl.js')
 
 const userWhiteId = ['U4a0c5ed43235ae686454440518bcbc5b'];
 let joinTimestamps = {};
-let groupKey = 'cj/6rmp4xjp6';
+let groupKey = fs.readFileSync('./config/lineBotPWD.txt').toString();
 
 const token = process.env.LINENOTIFY; // 將此替換為您的 LINE Notify 權杖
 const lineNotifyURL = 'https://notify-api.line.me/api/notify';
@@ -31,7 +31,7 @@ const sendLineNotify = async message => {
         message,
       }).toString(),
     });
-    // console.log(a.json());
+    console.log(a.json());
   } catch (error) {
     console.error('Error:', error);
   }
@@ -158,6 +158,7 @@ async function handleEvent(event) {
   }
 
   if (event.type === 'message' && event.source.type === 'group') {
+    console.log(groupKey);
     if (joinTimestamps[groupId] && event.message.text === groupKey) {
       delete joinTimestamps[groupId];
 
@@ -166,6 +167,7 @@ async function handleEvent(event) {
       replyText += `請輸入 /功能 來看看我有啥能力吧~\n`;
       replyText += `歡迎造訪CardTime網頁 : https://cardtime.tw \n`;
       groupKey = generateRandomString(16);
+      fs.writeFileSync('./config/lineBotPWD.txt', groupKey);
       console.log(groupKey);
       await sendLineNotify(`密鑰變更為 : ${groupKey}`);
       return client.replyMessage(event.replyToken, [{ type: 'text', text: replyText }]);
