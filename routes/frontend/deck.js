@@ -40,6 +40,7 @@ router.post('/deckList', limiter, checkToken, async (req, res, next) => {
       );
     } else {
       let deck = (await MongooseCRUD('R', 'decks', filter, { limit, page }))[0];
+      // console.log(deck);
       const getCardsInfo = async (_id, deck) => {
         const info = await MongooseCRUD('A', 'cards', [
           { $match: { _id: { $in: _id.map(el => new ObjectId(el)) } } },
