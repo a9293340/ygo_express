@@ -39,6 +39,10 @@ const app = express();
 app.set("views", path.join(__dirname, "views"));
 // app.set("view engine", "html");
 
+app.set("trust proxy", function (ip) {
+	return ip === "127.0.0.1" || ip === "172.233.65.87"; // 只信任 localhost 和 172.233.65.87
+});
+
 app.use(logger("dev"));
 
 const config = {
@@ -51,76 +55,6 @@ app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: false, limit: "10mb" }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
-
-// app.post('/api/webhook', (req, res) => {
-//   Promise.all(req.body.events.map(handleEvent))
-//     .then(result => res.json(result))
-//     .catch(err => {
-//       console.error('Error occurred:', err);
-//       res.status(500).end();
-//     });
-// });
-
-// async function handleEvent(event) {
-//   if (event.type !== 'message' || event.message.type !== 'text') {
-//     return Promise.resolve(null);
-//   }
-
-//   let replyText = '';
-//   const search = event.message.text.toLowerCase().startsWith('/s ');
-//   const price = event.message.text.toLowerCase().startsWith('/p ');
-//   if (search || price) {
-//     const cardId = await MongooseCRUD('R', 'cards', {
-//       id: event.message.text.toUpperCase().split(' ')[1],
-//     });
-//     if (cardId.length) {
-//       const card = cardId[0];
-//       if (search) {
-//         replyText = `
-// 				卡片名稱 : ${card.name}
-// 				攻擊/守備 : ${card.atk}/${card.def}
-// 				屬性 : ${card.attribute} / 種族 : ${card.race ? card.race : '-'} / 等級 : ${
-//           card.star ? card.star : '-'
-//         }
-// 				類別 : ${card.type}
-// 				效果 : ${card.effect}
-// 				版本 : ${card.rarity.join(',')}
-// 				https://cardtime.tw/api/card-image/cards/${card.number}.webp
-// 				`;
-//       } else {
-//         console.log(card.rarity);
-//         const rLens = card.rarity.length;
-//         console.log(rLens);
-//         const prices = card.price_info.slice(-rLens);
-//         console.log(prices);
-//         const priceText = prices.map(
-//           el => `
-// 					版本 : ${el.rarity} / 均價 : ${el.price_avg} / 最低價 : ${el.price_lowest}
-// 				`,
-//         );
-//         console.log(priceText);
-
-//         replyText = `
-// 				卡片名稱 : ${card.name}
-// 				卡價時間 : ${prices[0].time}
-// 				卡價 :
-// 				`;
-//         for (let i = 0; i < priceText.length; i++) {
-//           const pt = priceText[i];
-//           replyText += `${pt}`;
-//         }
-//       }
-//     } else replyText = '無此卡片';
-//   }
-
-//   // 處理空消息或未知命令的情況
-//   if (replyText === '') {
-//     return Promise.resolve(null);
-//   }
-
-//   // console.log(`Replying with message: ${replyText}`);
-//   return client.replyMessage(event.replyToken, { type: 'text', text: replyText });
-// }
 
 // Back End
 app.use("/api/webhook", lineBotRouter);
