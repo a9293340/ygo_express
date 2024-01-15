@@ -197,7 +197,7 @@ async function handleEvent(event) {
 		let filter;
 		let jud = "";
 		// 卡片密碼
-		if (Number.isInteger(parseInt(tarText)) && search) {
+		if (/^[0-9]+$/.test(tarText) && search) {
 			filter = {
 				number: tarText,
 			};
@@ -208,7 +208,6 @@ async function handleEvent(event) {
 			search
 		) {
 			const tranChi = convertSimplifiedToTraditional(tarText);
-			// console.log(tranChi);
 			filter = {
 				name: tranChi,
 			};
