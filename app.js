@@ -29,6 +29,7 @@ const {
 	memberRouter,
 	searchRouter,
 	lineBotRouter,
+	jurisprudenceRouter,
 } = require("./routes/index");
 
 const http = require("http");
@@ -77,6 +78,7 @@ app.use("/api/cardsImage", cardsImageRouter);
 app.use("/api/deck", deckRouter);
 app.use("/api/member", memberRouter);
 app.use("/api/search", searchRouter);
+app.use("/api/jurisprudence", jurisprudenceRouter);
 
 app.get("/api/test", (req, res) => {
 	res.send("測試");
