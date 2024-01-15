@@ -304,7 +304,7 @@ async function handleEvent(event) {
 		const tarText = event.message.text.substr(3);
 		let data = [];
 		// 卡片密碼
-		if (parseInt(tarText))
+		if (/^[0-9]+$/.test(tarText))
 			data = await MongooseCRUD("R", "jurisprudence", {
 				number: tarText,
 			});
