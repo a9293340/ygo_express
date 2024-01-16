@@ -185,6 +185,7 @@ async function handleEvent(event) {
 	}
 
 	let replyText = "";
+	let reply2Text = "";
 	let img;
 	const search = event.message.text.toLowerCase().startsWith("/s ");
 	const price = event.message.text.toLowerCase().startsWith("/p ");
@@ -246,8 +247,11 @@ async function handleEvent(event) {
 				} / 等級 : ${card.star ? card.star : "-"}\n`;
 				replyText += `類別 : ${card.type}\n`;
 				replyText += `效果 : ${card.effect}\n`;
-				replyText += !jud ? `版本 : ${card.rarity.join(",")}\n` : `卡號 :\n`;
-				if (jud) replyText += ids;
+				if (!jud) replyText += `版本 : ${card.rarity.join(",")}\n`;
+				if (jud) {
+					reply2Text += `卡號 :\n`;
+					reply2Text += ids;
+				}
 			} else {
 				const rLens = card.rarity.length;
 				const prices = card.price_info.slice(-rLens);
@@ -361,6 +365,7 @@ async function handleEvent(event) {
 
 	// console.log(`Replying with message: ${replyText}`);
 	let msg = [{ type: "text", text: replyText }];
+	if (reply2Text) msg.push({ type: "text", text: reply2Text });
 	if (img) msg.push(img);
 	// console.log(msg);
 	return client.replyMessage(event.replyToken, msg);
