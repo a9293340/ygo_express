@@ -156,13 +156,28 @@ const cards_image = new mongoose.Schema({
 });
 
 const decks = new mongoose.Schema({
-	admin_id: { type: String },
-	title: { type: String },
-	create_date: { type: Date },
-	last_edit_date: { type: Date },
-	main_deck: { type: Array },
-	extra_deck: { type: Array },
-	side_deck: { type: Array },
+	admin_id: { type: String, required: true },
+	title: { type: String, required: true, index: true },
+	create_date: { type: Date, required: true },
+	last_edit_date: { type: Date, default: Date.now, required: true },
+	main_deck: [
+		{
+			card_id: { type: String, required: true },
+			card_rarity: { type: String, required: true },
+		},
+	],
+	extra_deck: [
+		{
+			card_id: { type: String, required: true },
+			card_rarity: { type: String, required: true },
+		},
+	],
+	side_deck: [
+		{
+			card_id: { type: String, required: true },
+			card_rarity: { type: String, required: true },
+		},
+	],
 });
 
 const calendar = new mongoose.Schema({
