@@ -108,7 +108,8 @@ router.post("/list", limiter, checkToken, async (req, res, next) => {
 
 router.post("/add", limiter, checkToken, async (req, res, next) => {
 	let { token, tokenReq, ...useful } = decryptRes(req.body.data);
-	await canNotBeSameBeforeAdd(res, next, "cards", useful, "id");
+	// await canNotBeSameBeforeAdd(res, next, "cards", useful, "id");
+	pAdd(res, next, "cards", useful);
 });
 
 router.post("/edit", limiter, checkToken, async (req, res, next) => {
