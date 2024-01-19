@@ -147,7 +147,7 @@ const cards = new mongoose.Schema({
 			price_avg: { type: Number, default: null },
 		},
 	],
-	id: { type: String, required: true, unique: true, index: true },
+	id: { type: String, required: true, index: true },
 });
 
 const cards_image = new mongoose.Schema({
