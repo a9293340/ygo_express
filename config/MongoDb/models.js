@@ -120,34 +120,34 @@ const battle_paper = new mongoose.Schema({
 });
 
 const cards = new mongoose.Schema({
-	number: { type: String },
-	name: { type: String },
-	type: { type: String },
+	number: { type: String, required: true, index: true },
+	name: { type: String, required: true },
+	type: { type: String, required: true },
 	race: { type: String },
 	star: { type: String },
-	attribute: { type: String },
-	rarity: { type: Array },
+	attribute: { type: String, required: true },
+	rarity: { type: Array, required: true },
 	atk: { type: Number },
 	def: { type: Number },
-	product_information_type: { type: String },
-	effect: { type: String },
+	product_information_type: { type: String, required: true },
+	effect: { type: String, required: true },
 	price_info: [
 		{
-			time: { type: Date },
-			rarity: { type: String },
+			time: { type: Date, required: true },
+			rarity: { type: String, required: true },
 			price_lowest: { type: Number, default: null },
 			price_avg: { type: Number, default: null },
 		},
 	],
 	price_yuyu: [
 		{
-			time: { type: Date },
-			rarity: { type: String },
+			time: { type: Date, required: true },
+			rarity: { type: String, required: true },
 			price_lowest: { type: Number, default: null },
 			price_avg: { type: Number, default: null },
 		},
 	],
-	id: { type: String },
+	id: { type: String, required: true, unique: true, index: true },
 });
 
 const cards_image = new mongoose.Schema({
