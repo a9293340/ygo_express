@@ -41,7 +41,6 @@ const pList = (
       option.sort[key] = -1;
     }
   }
-  // console.log(option);
   // console.log(modelName, target, option);
   try {
     MongooseCRUD('R', modelName, target, option, projection).then(async (arr, err) => {
