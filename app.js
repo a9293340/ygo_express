@@ -52,7 +52,7 @@ const config = {
 };
 app.use('/api/webhook', line.middleware(config));
 
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({ limit: '100mb' }));
 app.use(express.urlencoded({ extended: false, limit: '200mb' }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
