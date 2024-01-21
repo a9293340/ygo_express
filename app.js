@@ -30,6 +30,7 @@ const {
   searchRouter,
   lineBotRouter,
   jurisprudenceRouter,
+  forbiddenCardListRouter,
 } = require('./routes/index');
 
 const http = require('http');
@@ -79,6 +80,7 @@ app.use('/api/deck', deckRouter);
 app.use('/api/member', memberRouter);
 app.use('/api/search', searchRouter);
 app.use('/api/jurisprudence', jurisprudenceRouter);
+app.use('/api/forbiddenCardList', forbiddenCardListRouter);
 
 app.get('/api/test', (req, res) => {
   res.send('測試');
