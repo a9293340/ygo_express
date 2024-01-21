@@ -38,7 +38,7 @@ router.post('/list', limiter, checkToken, async (req, res, next) => {
   // id
   if (id) target['id'] = fuzzySearch(id);
   if (name) target['name'] = fuzzySearch(name);
-  if (number) target['number'] = fuzzySearch(number);
+  if (number) target['number'] = typeof number === 'string' ? fuzzySearch(number) : { $in: number };
   // _id number type attribute start product_information_type
   if (useful) target = { ...target, ...useful };
 
@@ -84,7 +84,6 @@ router.post('/list', limiter, checkToken, async (req, res, next) => {
   aggregateFilter.push({ $sort: { id: 1 } });
   aggregateFilter.push({ $skip: page * limit });
   aggregateFilter.push({ $limit: limit });
-  // console.log(aggregateFilter);
   await pAggregate(res, 'cards', aggregateFilter, { limit, page });
 });
 

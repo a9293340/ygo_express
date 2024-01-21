@@ -9,7 +9,7 @@ router.post('/list', limiter, async (req, res, next) => {
   const { number, type } = decryptRes(req.body.data);
   let filter = {};
   if (number) filter.number = number;
-  if (type) filter.type = type;
+  if (Number.isInteger(type)) filter.type = type;
 
   const data = await MongooseCRUD('R', 'forbidden_card_list', filter);
 
