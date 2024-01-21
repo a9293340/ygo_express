@@ -20,6 +20,7 @@ const memberRouter = require('./frontend/member');
 const searchRouter = require('./frontend/search');
 const jurisprudenceRouter = require('./frontend/jurisprudence');
 const forbiddenCardListRouter = require('./frontend/forbiddenCardList');
+const checkTokenRouter = require('./frontend/checkToken');
 
 const lineBotRouter = require('./linebot/webhook');
 
@@ -46,4 +47,5 @@ module.exports = {
   lineBotRouter,
   jurisprudenceRouter,
   forbiddenCardListRouter,
+  checkTokenRouter,
 };

@@ -31,6 +31,7 @@ const {
   lineBotRouter,
   jurisprudenceRouter,
   forbiddenCardListRouter,
+  checkTokenRouter,
 } = require('./routes/index');
 
 const http = require('http');
@@ -81,6 +82,7 @@ app.use('/api/member', memberRouter);
 app.use('/api/search', searchRouter);
 app.use('/api/jurisprudence', jurisprudenceRouter);
 app.use('/api/forbiddenCardList', forbiddenCardListRouter);
+app.use('/api/checkToken', checkTokenRouter);
 
 app.get('/api/test', (req, res) => {
   res.send('測試');

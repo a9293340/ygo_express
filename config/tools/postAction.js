@@ -14,7 +14,7 @@ const pList = (
   hasPage = false,
   projection = {},
 ) => {
-  console.log(mongoose.Types.ObjectId.isValid(target._id));
+  // console.log(mongoose.Types.ObjectId.isValid(target._id));
   if (target._id) {
     if (!mongoose.Types.ObjectId.isValid(target._id)) {
       next(10004);
