@@ -14,7 +14,7 @@ const pList = (
   hasPage = false,
   projection = {},
 ) => {
-  console.log(mongoose.Types.ObjectId.isValid(target._id));
+  // console.log(mongoose.Types.ObjectId.isValid(target._id));
   if (target._id) {
     if (!mongoose.Types.ObjectId.isValid(target._id)) {
       next(10004);
@@ -41,7 +41,6 @@ const pList = (
       option.sort[key] = -1;
     }
   }
-  // console.log(option);
   // console.log(modelName, target, option);
   try {
     MongooseCRUD('R', modelName, target, option, projection).then(async (arr, err) => {

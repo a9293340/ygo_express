@@ -29,15 +29,39 @@ router.post("/deckList", limiter, checkToken, async (req, res, next) => {
 					$lte: toISODate(end_date),
 				};
 			if (other) target = { ...target, ...other };
-			pList(
-				res,
-				next,
-				"decks",
-				target,
-				begin_date && end_date,
-				{ limit, page },
-				{ main_deck: 0, extra_deck: 0, side_deck: 0 }
+
+			let data = JSON.parse(
+				JSON.stringify(
+					await MongooseCRUD(
+						"R",
+						"decks",
+						target,
+						{ limit, page, sort: { create_date: -1 } },
+						{ main_deck: 0, extra_deck: 0, side_deck: 0 }
+					)
+				)
 			);
+			const admins = data.map((x) => x.admin_id);
+			const admins_name = await MongooseCRUD(
+				"R",
+				"admin",
+				{ account: admins },
+				{},
+				{ account: 1, name: 1, _id: 0 }
+			);
+			data.forEach((deck, i) => {
+				const idx = admins_name.findIndex((x) => x.account === deck.admin_id);
+				if (idx !== -1) data[i].admin_name = admins_name[idx].name;
+				else data[i].admin_name = "N/A";
+			});
+			const count = await MongooseCRUD("COUNT", "decks", target);
+			res.status(200).json({
+				error_code: 0,
+				data: encryptRes({
+					total: count,
+					list: data,
+				}),
+			});
 		} else {
 			let deck = JSON.parse(
 				JSON.stringify(

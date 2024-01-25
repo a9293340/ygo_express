@@ -28,7 +28,7 @@ router.post('/login', limiter, async (req, res, next) => {
         const tokenArr = await MongooseCRUD('R', 'frontend_token', { tokenReq: user.account });
         res.status(200).json({
           error_code: tokenArr.length && new Date() - tokenArr[0].date > 60 * 60 * 1000 ? 10009 : 0,
-          data: await makeToken('f', tokenArr.length, user.account),
+          data: await makeToken('f', tokenArr.length, user.account, arr[0].name),
         });
       }
     });
