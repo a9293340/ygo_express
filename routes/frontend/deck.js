@@ -59,6 +59,7 @@ router.post("/deckList", limiter, checkToken, async (req, res, next) => {
 							name: 1,
 							star: 1,
 							type: 1,
+							effect: 1,
 						},
 					},
 				]);
@@ -72,6 +73,7 @@ router.post("/deckList", limiter, checkToken, async (req, res, next) => {
 						card_price: final.price_info,
 						card_name: final.name,
 						card_type: final.type,
+						card_effect: final.effect,
 					};
 					if (final.star) deck.card_star = final.star;
 					return deck;
