@@ -243,13 +243,11 @@ async function handleEvent(event) {
 				const url2 = `https://cardtime.tw/api/card-image/cards/${cardId[1].number}.webp`;
 				await downloadAndConvertImage(url2, cardId[1].number);
 				const jpg2 = `https://cardtime.tw/api/card-image/linebot/${cardId[1].number}.jpeg`;
-				img.push([
-					{
-						type: "image",
-						originalContentUrl: jpg2,
-						previewImageUrl: jpg2,
-					},
-				]);
+				img.push({
+					type: "image",
+					originalContentUrl: jpg2,
+					previewImageUrl: jpg2,
+				});
 			}
 			if (search) {
 				replyText += `卡片名稱 : ${card.name}\n`;
