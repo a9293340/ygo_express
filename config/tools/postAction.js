@@ -41,7 +41,12 @@ const pList = (
       option.sort[key] = -1;
     }
   }
-  // console.log(modelName, target, option);
+  if (!Object.keys(option).find(el => el === 'sort') && hasPage) {
+    // console.log(hasPage);
+    if (Object.keys(hasPage).find(el => el === 'sort')) {
+      option.sort = hasPage.sort;
+    }
+  }
   try {
     MongooseCRUD('R', modelName, target, option, projection).then(async (arr, err) => {
       // console.log(arr, err);

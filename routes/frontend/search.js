@@ -73,6 +73,7 @@ router.post('/list', limiter, checkToken, async (req, res, next) => {
   pList(res, next, article_db, filter, false, {
     limit,
     page,
+    sort: { publish_date: -1 },
   });
 });
 
