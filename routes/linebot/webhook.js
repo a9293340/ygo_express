@@ -232,11 +232,23 @@ async function handleEvent(event) {
 			await downloadAndConvertImage(url, card.number);
 			const jpg = `https://cardtime.tw/api/card-image/linebot/${card.number}.jpeg`;
 			// console.log(jpg);
-			img = {
-				type: "image",
-				originalContentUrl: jpg,
-				previewImageUrl: jpg,
-			};
+			img = [
+				{
+					type: "image",
+					originalContentUrl: jpg,
+					previewImageUrl: jpg,
+				},
+			];
+			if (cardId.length === 2) {
+				const url2 = `https://cardtime.tw/api/card-image/cards/${cardId[1].number}.webp`;
+				await downloadAndConvertImage(url2, cardId[1].number);
+				const jpg2 = `https://cardtime.tw/api/card-image/linebot/${cardId[1].number}.jpeg`;
+				img.push({
+					type: "image",
+					originalContentUrl: jpg2,
+					previewImageUrl: jpg2,
+				});
+			}
 			if (search) {
 				replyText += `卡片名稱 : ${card.name}\n`;
 				replyText += `攻擊/守備 : ${card.atk !== null ? card.atk : "-"}/${
@@ -253,12 +265,21 @@ async function handleEvent(event) {
 					reply2Text += ids;
 				}
 			} else {
+				let price_2 = [];
+				if (cardId.length === 2)
+					price_2 = cardId[1].price_info.slice(-cardId[1].rarity.length);
 				const rLens = card.rarity.length;
 				const prices = card.price_info.slice(-rLens);
-				const priceText = prices.map(
-					(el) =>
-						`版本 : ${el.rarity} / 均價 : ${el.price_avg} / 最低價 : ${el.price_lowest}\n`
-				);
+				const priceText = [
+					...prices.map(
+						(el) =>
+							`版本 : ${el.rarity} / 均價 : ${el.price_avg} / 最低價 : ${el.price_lowest}\n`
+					),
+					...price_2.map(
+						(el) =>
+							`版本 : ${el.rarity} / 均價 : ${el.price_avg} / 最低價 : ${el.price_lowest}\n`
+					),
+				];
 				replyText += `卡片名稱 : ${card.name}\n`;
 				replyText += `卡價時間 : ${new Date(prices[0].time).toDateString()}\n`;
 				replyText += `卡價 :\n`;
@@ -366,7 +387,7 @@ async function handleEvent(event) {
 	// console.log(`Replying with message: ${replyText}`);
 	let msg = [{ type: "text", text: replyText }];
 	if (reply2Text) msg.push({ type: "text", text: reply2Text });
-	if (img) msg.push(img);
+	if (img) msg = [...msg, ...img];
 	// console.log(msg);
 	return client.replyMessage(event.replyToken, msg);
 }
