@@ -38,7 +38,11 @@ router.post('/list', limiter, checkToken, async (req, res, next) => {
   // id
   if (id) target['id'] = fuzzySearch(id);
   if (name) target['name'] = fuzzySearch(name);
-  if (number) target['number'] = typeof number === 'string' ? fuzzySearch(number) : { $in: number };
+  if (number) {
+    if (limit !== 1)
+      target['number'] = typeof number === 'string' ? fuzzySearch(number) : { $in: number };
+    else target['number'] = number;
+  }
   // _id number type attribute start product_information_type
   if (useful) target = { ...target, ...useful };
 
