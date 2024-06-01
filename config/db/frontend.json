@@ -13,5 +13,6 @@
   "add": ["/deck", "member"],
   "edit": ["/deck", "member"],
   "delete": ["/deck"],
-  "resetPassword": ["member"]
+  "resetPassword": ["member"],
+  "reSend": ["member"]
 }

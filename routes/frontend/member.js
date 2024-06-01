@@ -23,7 +23,7 @@ router.post('/login', limiter, async (req, res, next) => {
       if (err || arr.length < 1) next(err || 10004);
       else if (!arr.length) next(11001);
       else if (user.password !== arr[0]['password']) next(11002);
-      else if (arr[0].status) next(10008);
+      else if (arr[0].status === 1) next(10008);
       else {
         const tokenArr = await MongooseCRUD('R', 'frontend_token', { tokenReq: user.account });
         res.status(200).json({
@@ -85,15 +85,17 @@ router.post('/add', limiter, checkToken, async (req, res, next) => {
       password: user.password,
       email: user.email,
       photo: '',
-      status: 1,
+      status: 2,
       type: 2,
     };
     try {
       const accountTemp = await MongooseCRUD('R', 'admin', {
         $or: [{ account: user.account }, { email: user.email }],
       });
-      if (accountTemp.length) next(11003);
-      else {
+      if (accountTemp.length) {
+        if (accountTemp[0].status === 1) next(11003);
+        else if (accountTemp[0].status === 2) next(11007);
+      } else {
         const transporter = nodemailer.createTransport({
           host: 'smtp.gmail.com', // SMTP 服务器
           port: 587, // SMTP 端口
@@ -143,6 +145,64 @@ router.post('/add', limiter, checkToken, async (req, res, next) => {
         });
       }
     } catch (e) {
+      next(10003);
+    }
+  }
+});
+
+router.post('/reSend', limiter, checkToken, async (req, res, next) => {
+  const { email, account } = decryptRes(req.body.data);
+  if (!account || !email) next(10003);
+  else {
+    try {
+      const transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com', // SMTP 服务器
+        port: 587, // SMTP 端口
+        secure: false, // 如果端口为 465 则为 true，其他端口一般为 false
+        auth: {
+          user: process.env.EMAIL, // 你的邮箱账户
+          pass: process.env.EPASS, // 你的邮箱密码
+        },
+      });
+      const signWords = `
+        <br><br>
+        <br><br>
+        <img src='https://cardtime.tw/favicon-32x32.png'>
+        <span style='font-size: 20px;font-weight: 800;'>卡壇 CardTime - 台灣遊戲王相關資訊網</span>
+        <p>聯絡信箱 : ygo.cardtime.gmail.com</p>
+      `;
+      const mailOptions = {
+        from: 'erichong19900327@gmail.com',
+        to: email,
+        subject: 'CardTime卡壇 註冊確認連結',
+        html: `
+          <p>請收到此封郵件後，需在<span style='font-size: 18px;font-weight: 800;color:red;'>24小時</span>內點選下方連結確認，非常感謝!</p>
+          <a href="https://cardtime.tw/email_check/${encryptRes({
+            account: account,
+            date: new Date().toTimeString(),
+          }).replace(/\//g, '_')}">請點選此連結
+          </a>
+          <p> 若有任何問題請至官網查詢 : https://cardtime.tw/</a>
+          <p> 或請來信至 : ygo.cardtime.gmail.com</a>
+          
+          
+          
+
+          ${signWords}
+        `,
+      };
+      transporter.sendMail(mailOptions, async function (error, info) {
+        if (error) {
+          console.log('Error sending email: ' + error);
+        } else {
+          console.log('Email sent: ' + info.response);
+          res.status(200).json({
+            error_code: 0,
+            data: encryptRes({ token: JSON.stringify({ account, email }) }),
+          });
+        }
+      });
+    } catch (error) {
       next(10003);
     }
   }
