@@ -23,6 +23,7 @@ const forbiddenCardListRouter = require('./frontend/forbiddenCardList');
 const checkTokenRouter = require('./frontend/checkToken');
 
 const lineBotRouter = require('./linebot/webhook');
+const lineMessageRouter = require('./linebot/message_webhook');
 
 module.exports = {
   adminRouter,
@@ -48,4 +49,5 @@ module.exports = {
   jurisprudenceRouter,
   forbiddenCardListRouter,
   checkTokenRouter,
+  lineMessageRouter,
 };
