@@ -32,6 +32,7 @@ const {
   jurisprudenceRouter,
   forbiddenCardListRouter,
   checkTokenRouter,
+  lineMessageRouter,
 } = require('./routes/index');
 
 const http = require('http');
@@ -53,6 +54,7 @@ const config = {
   channelSecret: process.env.CHANNEL_SECRET,
 };
 app.use('/api/webhook', line.middleware(config));
+app.use('/api/line-webhook', lineMessageRouter);
 
 app.use(express.json({ limit: '100mb' }));
 app.use(express.urlencoded({ extended: false, limit: '200mb' }));
@@ -86,6 +88,17 @@ app.use('/api/checkToken', checkTokenRouter);
 
 app.get('/api/test', (req, res) => {
   res.send('測試');
+});
+
+app.get('/api/_hc', (req, res) => {
+  res.status(200).json({
+    status: 'OK',
+    timestamp: new Date().toISOString(),
+    service: 'YGO Express API',
+    uptime: process.uptime(),
+    memory: process.memoryUsage(),
+    environment: process.env.NODE_ENV || 'development',
+  });
 });
 
 app.get('/api/', (req, res) => {

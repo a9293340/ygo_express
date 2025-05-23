@@ -29,6 +29,9 @@ jobs:
           echo DOMAIN=${{ secrets.DOMAIN }} >> .env
           echo EMAIL=${{ secrets.EMAIL }} >> .env
           echo EPASS=${{ secrets.EPASS }} >> .env
+          echo LINE_MANAGER_IDS=${{ secrets.LINE_MANAGER_IDS }} >> .env
+          echo LINE_CHANNEL_ACCESS_TOKEN=${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }} >> .env
+          echo LINE_CHANNEL_SECRET=${{ secrets.LINE_CHANNEL_SECRET }} >> .env
           echo CHANNEL_ACCESS_TOKEN=${{ secrets.CHANNEL_ACCESS_TOKEN }} >> .env
           echo CHANNEL_SECRET=${{ secrets.CHANNEL_SECRET }} >> .env
           echo DB=ygo >> .env
