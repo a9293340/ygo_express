@@ -8,7 +8,7 @@ const config = {
   channelSecret: process.env.LINE_CHANNEL_SECRET,
 };
 
-// 建立 LINE Bot 客戶端
+// 建立 LINE Bot 客戶端(line-webhook)
 const client = new line.Client(config);
 
 // 授權的管理者 ID (從環境變數讀取)
